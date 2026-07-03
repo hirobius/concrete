@@ -5,10 +5,11 @@ import type { Config } from 'tailwindcss';
  *
  * Bound to the canonical HDS tokens via CSS custom properties. The actual
  * values come from src/styles/tokens.generated.css (imported in globals.css),
- * which is generated from the parent's hirobius.tokens.json on `pnpm tokens`.
+ * vendored into this repo — resolved from the HDS base tokens + the Concrete
+ * Creations tenant overlay (tenant/tokens.json).
  *
- * Do NOT hardcode hex values here. If a token is missing from the canonical
- * set, add it to hirobius.tokens.json upstream.
+ * Do NOT hardcode hex values here. If a token is missing, add it to the
+ * tenant overlay (or regenerate tokens.generated.css from the HDS base).
  */
 const config: Config = {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
