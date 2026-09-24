@@ -6,10 +6,9 @@ lives here. The codebase is fully scaffolded; this is the
 
 ## 1. Install + first run (5 min)
 
-From the worktree root (`/home/adrian/projects/concrete-creations`):
+From the repo root:
 
 ```bash
-cd apps/concrete
 pnpm install
 cp .env.example .env.local
 pnpm dev
@@ -41,7 +40,10 @@ The site should render with placeholder products and broken images
    `price_TODO_form_NN` placeholders.
 5. Get keys from <https://dashboard.stripe.com/apikeys>:
    - `STRIPE_SECRET_KEY` → `.env.local`
-   - `VITE_STRIPE_PUBLISHABLE_KEY` → `.env.local`
+
+   Checkout is Stripe-hosted and the session is created server-side, so
+   **no publishable key is needed**. Earlier revisions of this file asked
+   for `VITE_STRIPE_PUBLISHABLE_KEY`; nothing in `api/` or `src/` reads it.
 6. **Webhook**: at <https://dashboard.stripe.com/webhooks>, add an
    endpoint pointing at `https://hirobius.studio/api/stripe-webhook`
    listening for `checkout.session.completed`. Copy the signing
@@ -49,15 +51,24 @@ The site should render with placeholder products and broken images
 
 ## 4. Vercel project + DNS (15 min)
 
-1. Push the branch to GitHub. (Currently `feat/concrete-creations` in
-   the parent repo. Either merge to main and let Vercel watch the
-   monorepo, or extract `apps/concrete/` to its own repo and connect
-   that — see the "Extraction" appendix at the bottom.)
-2. At <https://vercel.com/new>, import the repo. **Set the root
-   directory to `apps/concrete`** so Vercel only deploys this app.
-3. Add the four env vars from `.env.local` into the Vercel project's
-   Environment Variables panel. Mark `STRIPE_SECRET_KEY` and
-   `STRIPE_WEBHOOK_SECRET` as Production-only initially.
+1. This repo IS the app — the extraction from the old monorepo already
+   happened, so there is nothing to move.
+2. At <https://vercel.com/new>, import `hirobius/concrete`. **Leave the
+   root directory blank** (`.`). An earlier revision of this file named a
+   subdirectory of the old monorepo here; that path does not exist in this
+   repo and the import fails if you use it. `vercel.json` already declares the build command, output
+   directory and the `api/*.ts` functions.
+3. Add these into the Vercel project's Environment Variables panel.
+   This is the complete list the code actually reads — verified against
+   `api/` and `src/` by `scripts/check-launch-ready.mjs`, which fails if a
+   variable is read but documented nowhere:
+
+   | variable | required? | notes |
+   | --- | --- | --- |
+   | `STRIPE_SECRET_KEY` | yes | Production-only scope initially |
+   | `STRIPE_WEBHOOK_SECRET` | yes | Production-only scope initially |
+   | `DISCORD_SALES_WEBHOOK_URL` | yes | sale notifications |
+   | `VITE_SITE_URL` | optional | Stripe success/cancel URLs. Falls back to the request host, so it works unset — set it explicitly if the site is ever reached on more than one hostname |
 4. Add `hirobius.studio` and `www.hirobius.studio` as custom domains.
    Vercel prints the exact A / CNAME records — paste those into your
    registrar's DNS panel.
@@ -129,16 +140,12 @@ Before flipping to live mode:
 
 ---
 
-## Appendix — Extraction to a separate repo (optional, later)
+## Appendix — Extraction (done)
 
-When `apps/concrete/` is mature and you want it in its own GitHub repo:
+This app used to live in a subdirectory of a monorepo. It has since been
+extracted into this standalone repo, so any instruction that prefixes a
+path with the old app directory is describing a layout that no longer
+exists.
 
-```bash
-# from the parent repo
-git filter-repo --subdirectory-filter apps/concrete --path-rename apps/concrete/:./
-# push the resulting tree to a fresh empty repo on GitHub
-```
-
-The Vercel project just re-points at the new repo. Domain stays attached.
-The codebase has no relative imports outside `apps/concrete/`, so
-nothing else needs to move.
+`node scripts/check-launch-ready.mjs` fails if that prefix reappears in any
+document here, because following it misconfigures the Vercel import.

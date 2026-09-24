@@ -81,7 +81,7 @@ This unlocks:
 ### 3.3 Integration with 12u-cc-handmade-asset-pipeline
 **Feasibility: Medium — needs schema extension.**
 
-The current `products.json` schema (see `apps/concrete/data/products.json`) uses:
+The current `products.json` schema (see `data/products.json`) uses:
 ```json
 {
   "images": ["/products/form-01/01.jpg", ...],
@@ -227,7 +227,7 @@ Before this task moves from SPEC to BUILD, Adrian must decide:
 - blender-mcp GitHub: `https://github.com/ahujasid/blender-mcp`
 - PyPI package: `blender-mcp` v1.5.5
 - YouTube demo (referenced in task): `https://www.youtube.com/watch?v=0kMhtqYBe4Y`
-- Concrete Creations product schema: `apps/concrete/data/products.json`
+- Concrete Creations product schema: `data/products.json`
 - Parent asset pipeline task: `12u-cc-handmade-asset-pipeline`
 - Downstream content pipeline task: `12u-cc-ai-content-repurpose-pipeline`
 
