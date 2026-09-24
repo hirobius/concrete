@@ -5,8 +5,8 @@
       "slug": "monolith-01",
       "title": "Monolith 01",
       "subtitle": "Cast concrete object",
-      "story": "A hand-poured monolith with a raw, quarried face and a honed top. Each cast carries the aggregate pattern of the batch it came from — no two are identical.",
-      "dimensions": "120 × 80 × 80 mm",
+      "story": "A hand-poured monolith with a raw, quarried face and a honed top. Each cast carries the aggregate pattern of the batch it came from \u2014 no two are identical.",
+      "dimensions": "120 \u00d7 80 \u00d7 80 mm",
       "weightLbs": 2.1,
       "materials": [
         "GFRC concrete",
@@ -20,16 +20,18 @@
       },
       "status": "available",
       "images": [
-        "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzhCNkY0NyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmMzQyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTIlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI1MiIgZmlsbD0iI2Y1ZWZlNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44NSI+TW9ub2xpdGggMDE8L3RleHQ+PC9zdmc+"
-      ],
-      "primaryImage": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzhCNkY0NyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmMzQyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTIlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI1MiIgZmlsbD0iI2Y1ZWZlNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44NSI+TW9ub2xpdGggMDE8L3RleHQ+PC9zdmc+"
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzhCNkY0NyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmMzQyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTIlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI1MiIgZmlsbD0iI2Y1ZWZlNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44NSI+TW9ub2xpdGggMDE8L3RleHQ+PC9zdmc+",
+          "alt": "Monolith 01 straight on, quarried face toward the camera"
+        }
+      ]
     },
     {
       "slug": "cairn-study",
       "title": "Cairn Study",
       "subtitle": "Stacked form, 3-piece",
       "story": "Three cast elements balanced into a small cairn. Sold as a set; the stacking order is yours to decide.",
-      "dimensions": "180 × 90 × 90 mm",
+      "dimensions": "180 \u00d7 90 \u00d7 90 mm",
       "weightLbs": 3.4,
       "materials": [
         "concrete",
@@ -44,16 +46,18 @@
       },
       "status": "available",
       "images": [
-        "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzc1NTkzQSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmMzQyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTIlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI1MiIgZmlsbD0iI2Y1ZWZlNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44NSI+Q2Fpcm4gU3R1ZHk8L3RleHQ+PC9zdmc+"
-      ],
-      "primaryImage": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzc1NTkzQSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmMzQyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTIlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI1MiIgZmlsbD0iI2Y1ZWZlNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44NSI+Q2Fpcm4gU3R1ZHk8L3RleHQ+PC9zdmc+"
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzc1NTkzQSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmMzQyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTIlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI1MiIgZmlsbD0iI2Y1ZWZlNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44NSI+Q2Fpcm4gU3R1ZHk8L3RleHQ+PC9zdmc+",
+          "alt": "Cairn Study straight on, all three stacked forms"
+        }
+      ]
     },
     {
       "slug": "vessel-ash",
-      "title": "Vessel — Ash",
+      "title": "Vessel \u2014 Ash",
       "subtitle": "Concrete vessel",
       "story": "A wide-mouthed vessel with a warm ash tint mixed into the pour. Watertight-lined; equally at home holding stems or nothing at all.",
-      "dimensions": "110 × 140 × 140 mm",
+      "dimensions": "110 \u00d7 140 \u00d7 140 mm",
       "weightLbs": 2.8,
       "materials": [
         "pigmented concrete",
@@ -67,9 +71,11 @@
       },
       "status": "sold-out",
       "images": [
-        "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzVDNDMyQSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmMzQyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTIlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI1MiIgZmlsbD0iI2Y1ZWZlNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44NSI+VmVzc2VsIOKAlCBBc2g8L3RleHQ+PC9zdmc+"
-      ],
-      "primaryImage": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzVDNDMyQSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmMzQyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTIlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI1MiIgZmlsbD0iI2Y1ZWZlNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44NSI+VmVzc2VsIOKAlCBBc2g8L3RleHQ+PC9zdmc+"
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzVDNDMyQSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNmMzQyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iMTAwMCIgZmlsbD0idXJsKCNnKSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTIlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSI1MiIgZmlsbD0iI2Y1ZWZlNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgb3BhY2l0eT0iMC44NSI+VmVzc2VsIOKAlCBBc2g8L3RleHQ+PC9zdmc+",
+          "alt": "Vessel \u2014 Ash straight on, looking into the opening"
+        }
+      ]
     }
   ]
 }

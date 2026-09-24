@@ -64,13 +64,27 @@ const checks = [
       const { list } = products();
       const bad = [];
       for (const p of list) {
-        const imgs = [p.primaryImage, ...(p.images ?? [])].filter(Boolean);
-        const placeholders = imgs.filter(isPlaceholderImage).length;
-        const missing = imgs
-          .filter((s) => typeof s === 'string' && !s.startsWith('data:') && s.startsWith('/'))
+        const raw = p.images ?? [];
+        if (!raw.length) {
+          bad.push(`${p.slug} → no images at all`);
+          continue;
+        }
+        // images[] is {src, alt}. An unrecognised shape FAILS rather than passes:
+        // when this file changed shape, the old string check silently returned
+        // false for every entry and the gate went green on three placeholder
+        // products. A check that cannot read its input must say so.
+        const srcs = [];
+        for (const img of raw) {
+          if (typeof img?.src === 'string') srcs.push(img.src);
+          else bad.push(`${p.slug} → unreadable image entry (expected {src, alt}, got ${typeof img})`);
+          if (typeof img?.alt !== 'string' || !img.alt.trim())
+            bad.push(`${p.slug} → image missing alt text: ${String(img?.src).slice(0, 40)}`);
+        }
+        const placeholders = srcs.filter(isPlaceholderImage).length;
+        const missing = srcs
+          .filter((s) => !s.startsWith('data:') && s.startsWith('/'))
           .filter((s) => !existsSync(path.join(ROOT, 'public', s.replace(/^\//, ''))));
-        if (!imgs.length) bad.push(`${p.slug} → no images at all`);
-        else if (placeholders) bad.push(`${p.slug} → ${placeholders} placeholder data: URI(s)`);
+        if (placeholders) bad.push(`${p.slug} → ${placeholders} placeholder data: URI(s)`);
         if (missing.length) bad.push(`${p.slug} → referenced but not on disk: ${missing.join(', ')}`);
       }
       return {
