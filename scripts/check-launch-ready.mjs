@@ -43,6 +43,93 @@ const isPlaceholderImage = (src) => typeof src === 'string' && src.startsWith('d
 
 const checks = [
   {
+    name: 'font-weights-loaded',
+    why: 'A weight the tokens ask for but the page never loads is faux-rendered by the browser. Nothing errors, nothing looks broken — the letterforms are just quietly wrong, on every heading, forever.',
+    run() {
+      const vars = read('node_modules/@hirobius/design-system/dist/variables.css');
+
+      /** `var(--x)` -> the value of `--x`, chased through the variable graph. */
+      const deref = (value, depth = 0) => {
+        const m = /^var\(--([a-zA-Z0-9-]+)\)$/.exec((value ?? '').trim());
+        if (!m || depth > 8) return (value ?? '').trim();
+        const hit = new RegExp(`--${m[1]}:\\s*([^;]+);`).exec(vars);
+        return hit ? deref(hit[1], depth + 1) : '';
+      };
+
+      // Weight is only meaningful against the family it renders in. Checking a
+      // flat set of weights would demand Satoshi 400 because the MONO style
+      // asks for 400 — a different typeface entirely. Pair them at the source.
+      const byFamily = new Map();
+      const styles = new Set(
+        [...vars.matchAll(/--semantic-typography-([a-z0-9]+)-font-family:/g)].map((m) => m[1]),
+      );
+      for (const style of styles) {
+        const family = deref(
+          new RegExp(`--semantic-typography-${style}-font-family:\\s*([^;]+);`).exec(vars)?.[1],
+        )
+          .split(',')[0]
+          .replace(/["']/g, '')
+          .trim();
+        const weight = Number(
+          deref(new RegExp(`--semantic-typography-${style}-font-weight:\\s*([^;]+);`).exec(vars)?.[1]),
+        );
+        if (!family || !Number.isFinite(weight)) continue;
+        if (!byFamily.has(family)) byFamily.set(family, { weights: new Set(), styles: [] });
+        byFamily.get(family).weights.add(weight);
+        byFamily.get(family).styles.push(style);
+      }
+
+      if (!byFamily.size) {
+        return {
+          ok: false,
+          detail: 'Parsed no family/weight pairs out of the design system variables — the check cannot see its input.',
+          fix: 'Run `pnpm add @hirobius/design-system`, then re-run. A check that reads nothing must fail, never pass.',
+        };
+      }
+
+      // What index.html actually fetches. Fontshare: f[]=slug@400,500.
+      // Google Fonts: family=Name:wght@400;500.
+      const html = read('index.html');
+      const loaded = new Map();
+      const add = (name, weights) => {
+        const key = name.toLowerCase().replace(/[-+_]/g, ' ').trim();
+        if (!loaded.has(key)) loaded.set(key, new Set());
+        for (const w of weights) loaded.get(key).add(Number(w));
+      };
+      for (const [, slug, list] of html.matchAll(/f\[\]=([a-z0-9-]+)@([0-9,]+)/g)) add(slug, list.split(','));
+      for (const [, name, list] of html.matchAll(/family=([A-Za-z0-9+ ]+):wght@([0-9;]+)/g)) add(name, list.split(';'));
+
+      const problems = [];
+      const notes = [];
+      for (const [family, { weights, styles: used }] of byFamily) {
+        const want = [...weights].sort((a, b) => a - b);
+        const have = loaded.get(family.toLowerCase().replace(/[-+_]/g, ' ').trim());
+        if (!have) {
+          problems.push(
+            `${family} is not loaded at all — needs ${want.join(', ')} for ${used.sort().join(', ')}`,
+          );
+          continue;
+        }
+        const missing = want.filter((w) => !have.has(w));
+        const extra = [...have].filter((w) => !weights.has(w)).sort((a, b) => a - b);
+        if (missing.length) problems.push(`${family} missing ${missing.join(', ')} (needs ${want.join(', ')})`);
+        if (extra.length) notes.push(`${family} loads ${extra.join(', ')} that no token uses — dead bytes`);
+      }
+
+      const inventory = [...byFamily]
+        .map(([f, { weights }]) => `${f} ${[...weights].sort((a, b) => a - b).join('/')}`)
+        .join(' · ');
+
+      return {
+        ok: problems.length === 0,
+        detail: problems.length
+          ? problems.join('\n      ')
+          : `${inventory}${notes.length ? `\n      note: ${notes.join('; ')}` : ''}`,
+        fix: 'Load the missing family/weight in index.html, or — if a style genuinely should not use that face — change the token upstream in HDS rather than papering over it here.',
+      };
+    },
+  },
+  {
     name: 'stripe-price-ids',
     why: 'A placeholder price id means checkout fails at the moment money would change hands.',
     run() {
