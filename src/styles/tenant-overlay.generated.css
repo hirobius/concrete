@@ -18,6 +18,7 @@
   --semantic-accent-rest: #8B6F47; /* PLACEHOLDER warm stone — Concrete Creations primary accent. Adrian to specify final hex. */
   --semantic-accent-subtle: #F5EFE7; /* PLACEHOLDER warm stone tint — faint accent surface for hover halos. Adrian to specify final hex. */
   --semantic-color-border-accent: #8B6F47; /* PLACEHOLDER accent border / focus ring. Adrian to specify final hex. */
+  --semantic-color-content-accent: #75593A; /* PLACEHOLDER accent text colour — links and accent labels rendered as TEXT. Distinct from semantic.accent.conte */
   --semantic-color-surface-accent: #8B6F47; /* PLACEHOLDER accent surface fill (CTAs, primary buttons). Adrian to specify final hex. */
   --semantic-color-surface-accentSubtle: #F5EFE7; /* PLACEHOLDER faint accent tint surface. Adrian to specify final hex. */
 }
@@ -29,6 +30,7 @@
   --semantic-accent-rest: #A8896A;
   --semantic-accent-subtle: #3A2E1F;
   --semantic-color-border-accent: #A8896A;
+  --semantic-color-content-accent: #D0B492;
   --semantic-color-surface-accent: #8B6F47;
   --semantic-color-surface-accentSubtle: #3A2E1F;
 }

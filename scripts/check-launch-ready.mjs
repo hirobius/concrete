@@ -60,6 +60,7 @@ const checks = [
       // flat set of weights would demand Satoshi 400 because the MONO style
       // asks for 400 — a different typeface entirely. Pair them at the source.
       const byFamily = new Map();
+      const unresolved = [];
       const styles = new Set(
         [...vars.matchAll(/--semantic-typography-([a-z0-9]+)-font-family:/g)].map((m) => m[1]),
       );
@@ -70,10 +71,17 @@ const checks = [
           .split(',')[0]
           .replace(/["']/g, '')
           .trim();
-        const weight = Number(
-          deref(new RegExp(`--semantic-typography-${style}-font-weight:\\s*([^;]+);`).exec(vars)?.[1]),
+        // deref returns '' for anything it cannot chase, and Number('') is 0 —
+        // which is finite, so a guard on isFinite alone would quietly record
+        // "this family needs weight 0" and then pass, having checked nothing.
+        const rawWeight = deref(
+          new RegExp(`--semantic-typography-${style}-font-weight:\\s*([^;]+);`).exec(vars)?.[1],
         );
-        if (!family || !Number.isFinite(weight)) continue;
+        if (!family || !/^[1-9][0-9]{2}$/.test(rawWeight)) {
+          unresolved.push(`${style} (family "${family || '?'}", weight "${rawWeight}")`);
+          continue;
+        }
+        const weight = Number(rawWeight);
         if (!byFamily.has(family)) byFamily.set(family, { weights: new Set(), styles: [] });
         byFamily.get(family).weights.add(weight);
         byFamily.get(family).styles.push(style);
@@ -84,6 +92,17 @@ const checks = [
           ok: false,
           detail: 'Parsed no family/weight pairs out of the design system variables — the check cannot see its input.',
           fix: 'Run `pnpm add @hirobius/design-system`, then re-run. A check that reads nothing must fail, never pass.',
+        };
+      }
+
+      // A style whose family or weight would not resolve is a hole in the very
+      // thing being checked. Report it as a failure rather than checking the
+      // styles that happened to parse and calling that a pass.
+      if (unresolved.length) {
+        return {
+          ok: false,
+          detail: `could not resolve family/weight for: ${unresolved.join(', ')}`,
+          fix: 'The design system emitted a typography variable this check cannot follow. Fix it upstream in HDS, or teach deref() the new shape — do not narrow the check.',
         };
       }
 
