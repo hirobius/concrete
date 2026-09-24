@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "description": "Hirobius Studio — concrete figurine storefront. Vite + React Router + Tailwind + Stripe Checkout.",
+  "description": "Hirobius Studio \u2014 concrete figurine storefront. Vite + React Router + Tailwind + Stripe Checkout.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:launch": "node scripts/check-launch-ready.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

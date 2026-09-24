@@ -8,14 +8,14 @@ green.
 
 > ⚠ **Never commit live Stripe keys.** Keep them in `.env.local`
 > (gitignored) and in Vercel's project env vars (production scope) only.
-> See `CLAUDE.md` hard rules.
+> See `SETUP.md` — "Hard rules — recap". (This repo has no `CLAUDE.md`.)
 
 ---
 
 ## 1. Domain + DNS
 
 - [ ] `hirobius.studio` registered (verify renewal auto-pay is on)
-- [ ] DNS pointed at the hosting target (Vercel project for `apps/concrete`)
+- [ ] DNS pointed at the hosting target (the Vercel project for this repo; root directory blank)
 - [ ] `www.hirobius.studio` redirect → `hirobius.studio` (or vice versa, pick one)
 - [ ] SSL cert issued + auto-renewing (Vercel handles automatically)
 - [ ] Confirm cert is valid in 3 browsers (Chrome / Safari / Firefox)
@@ -34,7 +34,7 @@ green.
 
 ## 3. Product catalog
 
-- [ ] At least 3 real products in `apps/concrete/data/products.ts` (or wherever the catalog lives)
+- [ ] At least 3 real products in `data/products.json` (the catalog; `node scripts/check-launch-ready.mjs` fails while the starter catalog is still in place)
 - [ ] Each product has: title, slug, subtitle, price, photo(s), edition count, description
 - [ ] All photos are real (not placeholder), 1200×1500 minimum, color-corrected
 - [ ] Each product has a Stripe Price ID and is linked from the catalog
@@ -44,7 +44,7 @@ green.
 ## 4. Inventory tracking
 
 - [ ] Decide on tracking source of truth: manual JSON in repo? Airtable? Stripe inventory? (Pick ONE and document)
-- [ ] Process for marking sold-out documented in `apps/concrete/docs/INVENTORY.md` (create if not present)
+- [ ] Process for marking sold-out documented in `docs/INVENTORY.md` (create if not present)
 - [ ] Sold-out state renders correctly on `/products/<slug>` and `/` (verify)
 
 ## 5. Tax & legal
