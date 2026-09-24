@@ -154,6 +154,25 @@ const checks = [
     },
   },
   {
+    name: 'no-pinned-node-runtime',
+    why: 'Pinning @vercel/node in vercel.json fixes the function to one Node major. Vercel moves its default forward, the pin stops matching, and the deploy fails on a build that otherwise succeeded — which is exactly how the first deploy of this repo died.',
+    run() {
+      const cfg = JSON.parse(read('vercel.json'));
+      const pinned = Object.entries(cfg.functions ?? {})
+        .filter(([, v]) => typeof v?.runtime === 'string' && /^@vercel\/node/.test(v.runtime))
+        .map(([k, v]) => `${k} → ${v.runtime}`);
+      const pkg = JSON.parse(read('package.json'));
+      const engine = pkg.engines?.node;
+      const problems = [...pinned];
+      if (!engine) problems.push('package.json has no engines.node — the Node version lives only in a dashboard setting');
+      return {
+        ok: problems.length === 0,
+        detail: problems.length ? problems.join('\n      ') : `no runtime pin; engines.node = ${engine}`,
+        fix: 'Delete the runtime key (it is for custom runtimes like vercel-php, not Node) and declare engines.node in package.json — that overrides the project setting.',
+      };
+    },
+  },
+  {
     name: 'no-placeholder-strings',
     why: 'The exact class of leak that shipped on a client site before: a scaffold string reaching production.',
     run() {
