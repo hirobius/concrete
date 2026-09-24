@@ -2,7 +2,7 @@ export default function ShippingReturnsPage() {
   return (
     <article className="container-page py-20 max-w-editorial">
       <h1 className="text-3xl md:text-4xl">Shipping &amp; Returns</h1>
-      <p className="mt-2 text-xs uppercase tracking-wide text-secondary">Placeholder — review with counsel before launch.</p>
+      <p className="mt-2 text-xs uppercase tracking-caps text-secondary">Placeholder — review with counsel before launch.</p>
 
       <div className="mt-10 space-y-6 text-primary leading-relaxed text-sm">
         <section>

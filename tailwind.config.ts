@@ -100,6 +100,19 @@ const config: Config = {
           fontWeight: 'var(--semantic-typography-mono-font-weight)',
         }],
       },
+      letterSpacing: {
+        // `caps` only — the one HDS tracking token Tailwind does not already
+        // own. The other five HDS names (tighter/tight/normal/wide/wider) are
+        // also Tailwind's, and redefining a stock utility to a different value
+        // under an unchanged name is the antipattern this file was rewritten
+        // to remove. HDS's generated config applies the same rule.
+        //
+        // Without this, ten components here reached for `tracking-wide` —
+        // Tailwind's stock 0.025em, 42% of the 0.06em the eyebrow token
+        // specifies. Same bypass hds#283 found inside HDS itself; same cause,
+        // which is that the right utility did not exist.
+        caps: 'var(--primitive-typography-letterSpacing-caps)',
+      },
       borderRadius: {
         action: 'var(--semantic-radius-action)',      // buttons, inputs, badges
         container: 'var(--primitive-radius-12)',      // cards, sheets, modals

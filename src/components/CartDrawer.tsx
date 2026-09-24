@@ -47,7 +47,7 @@ export default function CartDrawer() {
       >
         <div className="flex items-center justify-between border-b border-borderSubtle px-6 h-16 shrink-0">
           <h2 className="text-lg">Cart</h2>
-          <button onClick={close} className="text-sm uppercase tracking-wide hover:opacity-60">
+          <button onClick={close} className="text-sm uppercase tracking-caps hover:opacity-60">
             Close
           </button>
         </div>
@@ -90,7 +90,7 @@ export default function CartDrawer() {
                       </button>
                       <button
                         onClick={() => remove(product.slug)}
-                        className="ml-auto text-xs uppercase tracking-wide text-secondary hover:text-error"
+                        className="ml-auto text-xs uppercase tracking-caps text-secondary hover:text-error"
                       >
                         Remove
                       </button>
@@ -106,7 +106,7 @@ export default function CartDrawer() {
         {lines.length > 0 && (
           <div className="border-t border-borderSubtle px-6 py-6 space-y-4 shrink-0">
             <div className="flex items-baseline justify-between text-sm">
-              <span className="uppercase tracking-wide">Subtotal</span>
+              <span className="uppercase tracking-caps">Subtotal</span>
               <span className="font-display text-base tabular-nums">${subtotal}</span>
             </div>
             <p className="text-xs text-secondary">

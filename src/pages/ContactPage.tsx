@@ -12,13 +12,13 @@ export default function ContactPage() {
         </p>
 
         <div>
-          <p className="uppercase tracking-wide text-xs text-secondary">Studio</p>
+          <p className="uppercase tracking-caps text-xs text-secondary">Studio</p>
           <p className="mt-2">Spokane, Washington</p>
           <p className="mt-1 text-sm text-secondary">By appointment only.</p>
         </div>
 
         <div>
-          <p className="uppercase tracking-wide text-xs text-secondary">Local pickup</p>
+          <p className="uppercase tracking-caps text-xs text-secondary">Local pickup</p>
           <p className="mt-2 text-sm text-primary">
             Available at checkout for buyers in the Spokane area. Pickup
             details are sent with the order confirmation.

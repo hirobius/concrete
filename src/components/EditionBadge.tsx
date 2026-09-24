@@ -6,7 +6,7 @@ export default function EditionBadge({ product }: { product: Product }) {
   const soldOut = product.edition.remaining === 0;
   return (
     <span
-      className={`inline-flex items-center text-xs uppercase tracking-wide ${
+      className={`inline-flex items-center text-xs uppercase tracking-caps ${
         soldOut ? 'text-disabled' : 'text-secondary'
       }`}
     >
