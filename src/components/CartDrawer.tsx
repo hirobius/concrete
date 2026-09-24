@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../lib/cart';
-import { getProduct } from '../lib/products';
+import { getProduct, primaryImage } from '../lib/products';
 import { startCheckout } from '../lib/stripe';
 
 export default function CartDrawer() {
@@ -61,8 +61,8 @@ export default function CartDrawer() {
                 <li key={product.slug} className="flex gap-4">
                   <div className="w-20 h-24 bg-overlay shrink-0">
                     <img
-                      src={product.primaryImage}
-                      alt={product.title}
+                      src={primaryImage(product)?.src}
+                      alt={primaryImage(product)?.alt ?? product.title}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         (e.currentTarget as HTMLImageElement).style.display = 'none';

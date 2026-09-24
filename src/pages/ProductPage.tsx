@@ -1,6 +1,6 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useState } from 'react';
-import { getProduct } from '../lib/products';
+import { getProduct, primaryImage } from '../lib/products';
 import EditionBadge from '../components/EditionBadge';
 import BuyButton from '../components/BuyButton';
 
@@ -21,8 +21,8 @@ export default function ProductPage() {
         <div className="space-y-4">
           <div className="aspect-[4/5] bg-overlay overflow-hidden rounded-container">
             <img
-              src={product.images[activeImage] ?? product.primaryImage}
-              alt={product.title}
+              src={(product.images[activeImage] ?? primaryImage(product))?.src}
+              alt={(product.images[activeImage] ?? primaryImage(product))?.alt ?? product.title}
               className="w-full h-full object-cover"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).style.display = 'none';
@@ -31,17 +31,17 @@ export default function ProductPage() {
           </div>
           {product.images.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
-              {product.images.map((src, i) => (
+              {product.images.map((image, i) => (
                 <button
-                  key={src}
+                  key={image.src}
                   onClick={() => setActiveImage(i)}
                   className={`aspect-square bg-overlay overflow-hidden rounded-container border ${
                     i === activeImage ? 'border-borderStrong' : 'border-transparent'
                   }`}
-                  aria-label={`View image ${i + 1}`}
+                  aria-label={image.alt}
                 >
                   <img
-                    src={src}
+                    src={image.src}
                     alt=""
                     className="w-full h-full object-cover"
                     onError={(e) => {
