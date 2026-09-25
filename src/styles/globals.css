@@ -1,35 +1,75 @@
 /*
  * Hirobius Studio — global styles.
  *
- * Tokens live in ./tokens.generated.css — resolved from the HDS base
- * tokens + the Concrete Creations tenant overlay (tenant/tokens.json).
- * We re-export the CSS vars here, then bind Tailwind utilities to them
- * in tailwind.config.ts.
+ * WHAT CHANGED AND WHY
+ *
+ * This file used to restate the design system instead of consuming it: the
+ * heading font, every heading weight, every line height, the eyebrow tracking
+ * and the button radii were literals here, and `tokens.generated.css` carried
+ * 21 hand-written custom properties under an "AUTO-GENERATED … regenerate if
+ * the base tokens change" header with no generator behind it.
+ *
+ * Several of those literals had already drifted from HDS, silently, because
+ * nothing compared them:
+ *
+ *   headings          Clash Display 500    HDS says Satoshi 700 (Clash dropped in hds#48)
+ *   heading tracking  -0.02em              HDS letterSpacing.tight is -0.01em
+ *   heading leading   1.1 for all          HDS sets it per level (h2 42px, h3 28px)
+ *   .eyebrow tracking 0.08em               HDS letterSpacing.caps is 0.06em
+ *   .btn radius       12px                 semantic.radius.action resolves to 8px
+ *   body leading      1.5                  HDS body line-height is 28px (1.647 at 17px)
+ *
+ * Every one of those was labelled as if it came from HDS. Now it actually does:
+ * `variables.css` from the published package is the base, the tenant overlay is
+ * the brand delta, and this file binds elements to those variables and declares
+ * nothing of its own except where it is genuinely a tenant decision (marked
+ * STUDIO-OWNED below).
+ *
+ * A type-ramp change upstream now reaches this site by bumping
+ * @hirobius/design-system. There is nothing here to re-sync by hand.
  */
 
-@import "./tokens.generated.css";
+/* The system. 508 lines, every semantic token resolved, :root + [data-theme="dark"]. */
+@import "@hirobius/design-system/variables.css";
+/* The brand delta — 8 accent colours. Generated: pnpm tokens:overlay */
+@import "./tenant-overlay.generated.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * STUDIO-OWNED. HDS ships display/h1/h2/h3 as static desktop maxima
+ * (display = 72px). It holds the fluid clamps in its token $extensions but does
+ * not emit them, so a storefront that wants headings to scale has to supply
+ * them. These are deliberately NOT named --semantic-typography-*: shadowing a
+ * system variable name is how the drift above started. Own it or consume it,
+ * never both.
+ *
+ * Upstream: hds#283 (type ramp) should decide whether HDS emits fluid sizes. If
+ * it does, delete this block and the four fontSize entries in tailwind.config.
+ */
 :root {
-  /* Responsive type ramp — mirrors src/styles/theme.css :root overrides.
-     Token JSON stores desktop-max sizes for Figma; these clamp() values
-     restore fluid scaling. */
-  --semantic-typography-display-font-size: clamp(40px, 8vw, 72px);
-  --semantic-typography-h1-font-size:      clamp(32px, 6vw, 48px);
-  --semantic-typography-h2-font-size:      clamp(24px, 3.5vw, 30px);
-  --semantic-typography-h3-font-size:      clamp(18px, 2vw, 20px);
+  --studio-size-display: clamp(40px, 8vw, 72px);
+  --studio-size-h1:      clamp(32px, 6vw, 48px);
+  --studio-size-h2:      clamp(24px, 3.5vw, 30px);
+  --studio-size-h3:      clamp(18px, 2vw, 20px);
+
+  /* Also STUDIO-OWNED. The old file declared this as
+     --semantic-layout-page-gutter-x, a name HDS has never published — it was
+     a local value wearing a system prefix, which is precisely why nothing
+     noticed it was local. Renamed so the ownership is visible. */
+  --studio-page-gutter-x: clamp(20px, 5vw, 48px);
 }
 
 @layer base {
   html {
-    font-family: 'Satoshi', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: var(--semantic-typography-body-font-family);
+    font-size: var(--semantic-typography-body-font-size);
+    line-height: var(--semantic-typography-body-line-height);
+    font-weight: var(--semantic-typography-body-font-weight);
     color: var(--semantic-color-content-primary);
     background: var(--semantic-color-surface-page);
-    font-size: var(--semantic-typography-body-font-size, 17px);
-    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -38,14 +78,28 @@
     min-height: 100vh;
   }
 
-  /* Single source of truth: every heading inherits Clash Display + weight 500.
-     Components don't repeat font-display on heading elements. */
+  /* Single source of truth for headings — the family, weight and tracking all
+     come from HDS. Size and leading are per level, as HDS defines them; only
+     the fluid size is ours. h4 follows h3 because HDS has no h4 composite. */
   h1, h2, h3, h4 {
-    font-family: 'Clash Display', 'Inter', system-ui, sans-serif;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    font-family: var(--semantic-typography-h1-font-family);
+    font-weight: var(--semantic-typography-h1-font-weight);
     color: var(--semantic-color-content-primary);
+  }
+  h1 {
+    font-size: var(--studio-size-h1);
+    line-height: var(--semantic-typography-h1-line-height);
+    letter-spacing: var(--semantic-typography-h1-letter-spacing);
+  }
+  h2 {
+    font-size: var(--studio-size-h2);
+    line-height: var(--semantic-typography-h2-line-height);
+    letter-spacing: var(--semantic-typography-h2-letter-spacing);
+  }
+  h3, h4 {
+    font-size: var(--studio-size-h3);
+    line-height: var(--semantic-typography-h3-line-height);
+    letter-spacing: var(--semantic-typography-h3-letter-spacing);
   }
 
   ::selection {
@@ -57,8 +111,8 @@
 @layer components {
   .container-page {
     @apply mx-auto w-full max-w-[80rem];
-    padding-left: var(--semantic-layout-page-gutter-x, clamp(1rem, 4vw, 4rem));
-    padding-right: var(--semantic-layout-page-gutter-x, clamp(1rem, 4vw, 4rem));
+    padding-left: var(--studio-page-gutter-x);
+    padding-right: var(--studio-page-gutter-x);
   }
 
   .rule {
@@ -67,19 +121,21 @@
     background: var(--semantic-color-border-subtle);
   }
 
-  /* Action: bg accent + onAccent text + 12px radius (semantic.radius.action) */
+  /* Action surface: accent fill, onAccent text, semantic.radius.action.
+     The radius was 12px here while the token resolves to 8px — the comment
+     claimed the token and the value did not match it. */
   .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.875rem 1.75rem;
+    padding: var(--primitive-space-3) var(--primitive-space-7);
     background: var(--semantic-color-surface-accent);
     color: var(--semantic-color-content-onAccent);
-    font-family: 'Satoshi', system-ui, sans-serif;
-    font-weight: 500;
-    font-size: 15px;
-    letter-spacing: 0.01em;
-    border-radius: 12px;
+    font-family: var(--semantic-typography-ui-font-family);
+    font-size: var(--semantic-typography-ui-font-size);
+    font-weight: var(--semantic-typography-ui-font-weight);
+    line-height: var(--semantic-typography-ui-line-height);
+    border-radius: var(--semantic-radius-action);
     transition: filter 200ms ease, background 200ms ease;
   }
   .btn-primary:hover { filter: brightness(0.92); }
@@ -90,20 +146,23 @@
     filter: none;
   }
 
+  /* Ghost action. Its label is small-caps, so it composes the eyebrow token
+     rather than restating 13px/0.04em — that restatement is the same bypass
+     hds#283 reports inside HDS itself. */
   .btn-ghost {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.625rem 1.25rem;
+    padding: var(--primitive-space-2) var(--primitive-space-5);
     background: transparent;
     color: var(--semantic-color-content-primary);
-    font-family: 'Satoshi', system-ui, sans-serif;
-    font-weight: 500;
-    font-size: 13px;
-    letter-spacing: 0.04em;
+    font-family: var(--semantic-typography-eyebrow-font-family);
+    font-size: var(--semantic-typography-eyebrow-font-size);
+    font-weight: var(--semantic-typography-eyebrow-font-weight);
+    letter-spacing: var(--semantic-typography-eyebrow-letter-spacing);
     text-transform: uppercase;
     border: 1px solid var(--semantic-color-border-default);
-    border-radius: 12px;
+    border-radius: var(--semantic-radius-action);
     transition: border-color 200ms ease, background 200ms ease;
   }
   .btn-ghost:hover {
@@ -111,11 +170,13 @@
     background: var(--semantic-color-surface-raised);
   }
 
-  /* Eyebrow: small uppercase block label — never inline in prose. 13px / 500. */
+  /* Eyebrow: small uppercase block label — never inline in prose. */
   .eyebrow {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-family: var(--semantic-typography-eyebrow-font-family);
+    font-size: var(--semantic-typography-eyebrow-font-size);
+    font-weight: var(--semantic-typography-eyebrow-font-weight);
+    letter-spacing: var(--semantic-typography-eyebrow-letter-spacing);
+    line-height: var(--semantic-typography-eyebrow-line-height);
     text-transform: uppercase;
     color: var(--semantic-color-content-secondary);
   }

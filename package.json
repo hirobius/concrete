@@ -5,13 +5,16 @@
   "type": "module",
   "description": "Hirobius Studio \u2014 concrete figurine storefront. Vite + React Router + Tailwind + Stripe Checkout.",
   "scripts": {
-    "dev": "vite",
     "build": "tsc -b && vite build",
+    "check:launch": "node scripts/generate-tenant-overlay.mjs --check && node scripts/check-launch-ready.mjs",
+    "dev": "vite",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
-    "check:launch": "node scripts/check-launch-ready.mjs"
+    "tokens:check": "node scripts/generate-tenant-overlay.mjs --check",
+    "tokens:overlay": "node scripts/generate-tenant-overlay.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@hirobius/design-system": "^0.15.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",

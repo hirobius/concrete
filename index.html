@@ -10,9 +10,35 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://hirobius.studio" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!--
+      Satoshi 500 (body/UI/eyebrow) and 700 (headings) — exactly the two weights
+      HDS's tokens resolve to, and no others.
+
+      This used to load clash-display@400,500,600,700 plus satoshi@400,500. Both
+      halves were wrong: HDS replaced Clash Display with Satoshi in hds#48, so
+      four weights of Clash were fetched for a face nothing referenced; and
+      Satoshi 700 — which every HDS heading composite asks for — was NOT loaded,
+      so headings faux-bolded. The browser synthesises that silently, which is
+      why it survived: nothing looks broken, the letterforms are just wrong.
+
+      If you add a weight to a token, add it here. `pnpm check:launch` fails if
+      these two lists stop matching.
+    -->
     <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
     <link
-      href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500&display=swap"
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@500,700&display=swap"
+      rel="stylesheet"
+    />
+    <!--
+      Geist Mono 400 — the `mono` token's face, used by the footer's text-mono.
+      It was declared in the tokens and never loaded, so that line has been
+      rendering in Courier New since launch. Same failure mode as the Satoshi
+      700 above: a fallback is not an error, so nobody sees it.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&display=swap"
       rel="stylesheet"
     />
     <title>Hirobius Studio — Concrete Figures</title>

@@ -3,14 +3,25 @@ import type { Config } from 'tailwindcss';
 /**
  * Hirobius Studio — Tailwind config.
  *
- * Bound to the canonical HDS tokens via CSS custom properties. The actual
- * values come from src/styles/tokens.generated.css (imported in globals.css),
- * vendored into this repo — resolved from the HDS base tokens + the Concrete
- * Creations tenant overlay (tenant/tokens.json).
+ * Every value here is a CSS variable, and every variable comes from
+ * @hirobius/design-system/variables.css (imported first in globals.css) or the
+ * generated tenant overlay beside it. There are no literals, because a literal
+ * here is a copy of a system decision that nothing will ever re-check — which
+ * is how this file ended up shipping headings at weight 500 where HDS says 700,
+ * eyebrow tracking at 0.08em where HDS says 0.06em, and an 8px action radius
+ * written as 12px under a comment naming the token it did not match.
  *
- * Do NOT hardcode hex values here. If a token is missing, add it to the
- * tenant overlay (or regenerate tokens.generated.css from the HDS base).
+ * The only exception is the four fluid heading sizes, which are STUDIO-OWNED
+ * and declared in globals.css under --studio-* names. HDS ships static desktop
+ * maxima; until hds#283 decides whether it emits fluid sizes, the clamps are
+ * ours. They are deliberately not named --semantic-* so nobody mistakes them
+ * for system values.
+ *
+ * If a value you need is missing: a brand decision goes in tenant/tokens.json
+ * (then `pnpm tokens:overlay`); a system decision goes upstream into HDS. It
+ * does not go here.
  */
+
 const config: Config = {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
@@ -39,25 +50,72 @@ const config: Config = {
         warning: 'var(--semantic-color-feedback-warning)',
       },
       fontFamily: {
-        display: ['"Clash Display"', '"Inter"', 'system-ui', 'sans-serif'],
-        body: ['"Satoshi"', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['"Geist Mono"', '"Courier New"', 'monospace'],
+        display: 'var(--semantic-typography-display-font-family)',
+        body: 'var(--semantic-typography-body-font-family)',
+        mono: 'var(--semantic-typography-mono-font-family)',
       },
       fontSize: {
-        // Tied to HDS type ramp (semantic.typography.*) with line-height + weight defaults.
-        // The clamp() values for display/h1/h2/h3 live in globals.css :root.
-        display: ['var(--semantic-typography-display-font-size)', { lineHeight: '1.0', fontWeight: '500', letterSpacing: '-0.03em' }],
-        h1: ['var(--semantic-typography-h1-font-size)', { lineHeight: '1.05', fontWeight: '500', letterSpacing: '-0.02em' }],
-        h2: ['var(--semantic-typography-h2-font-size)', { lineHeight: '1.15', fontWeight: '500', letterSpacing: '-0.015em' }],
-        h3: ['var(--semantic-typography-h3-font-size)', { lineHeight: '1.3', fontWeight: '500', letterSpacing: '-0.01em' }],
-        body: ['17px', { lineHeight: '1.5', fontWeight: '400' }],
-        ui: ['15px', { lineHeight: '1.4', fontWeight: '500' }],
-        eyebrow: ['13px', { lineHeight: '1.2', fontWeight: '500', letterSpacing: '0.08em' }],
-        mono: ['13px', { lineHeight: '1.4', fontWeight: '400' }],
+        // Size / line-height / weight / tracking all read from HDS. The four
+        // heading SIZES use the studio-owned fluid clamps; everything else,
+        // including their leading and tracking, is the system's.
+        display: ['var(--studio-size-display)', {
+          lineHeight: 'var(--semantic-typography-display-line-height)',
+          fontWeight: 'var(--semantic-typography-display-font-weight)',
+          letterSpacing: 'var(--semantic-typography-display-letter-spacing)',
+        }],
+        h1: ['var(--studio-size-h1)', {
+          lineHeight: 'var(--semantic-typography-h1-line-height)',
+          fontWeight: 'var(--semantic-typography-h1-font-weight)',
+          letterSpacing: 'var(--semantic-typography-h1-letter-spacing)',
+        }],
+        h2: ['var(--studio-size-h2)', {
+          lineHeight: 'var(--semantic-typography-h2-line-height)',
+          fontWeight: 'var(--semantic-typography-h2-font-weight)',
+          letterSpacing: 'var(--semantic-typography-h2-letter-spacing)',
+        }],
+        h3: ['var(--studio-size-h3)', {
+          lineHeight: 'var(--semantic-typography-h3-line-height)',
+          fontWeight: 'var(--semantic-typography-h3-font-weight)',
+          letterSpacing: 'var(--semantic-typography-h3-letter-spacing)',
+        }],
+        body: ['var(--semantic-typography-body-font-size)', {
+          lineHeight: 'var(--semantic-typography-body-line-height)',
+          fontWeight: 'var(--semantic-typography-body-font-weight)',
+        }],
+        ui: ['var(--semantic-typography-ui-font-size)', {
+          lineHeight: 'var(--semantic-typography-ui-line-height)',
+          fontWeight: 'var(--semantic-typography-ui-font-weight)',
+        }],
+        caption: ['var(--semantic-typography-caption-font-size)', {
+          lineHeight: 'var(--semantic-typography-caption-line-height)',
+          fontWeight: 'var(--semantic-typography-caption-font-weight)',
+        }],
+        eyebrow: ['var(--semantic-typography-eyebrow-font-size)', {
+          lineHeight: 'var(--semantic-typography-eyebrow-line-height)',
+          fontWeight: 'var(--semantic-typography-eyebrow-font-weight)',
+          letterSpacing: 'var(--semantic-typography-eyebrow-letter-spacing)',
+        }],
+        mono: ['var(--semantic-typography-mono-font-size)', {
+          lineHeight: 'var(--semantic-typography-mono-line-height)',
+          fontWeight: 'var(--semantic-typography-mono-font-weight)',
+        }],
+      },
+      letterSpacing: {
+        // `caps` only — the one HDS tracking token Tailwind does not already
+        // own. The other five HDS names (tighter/tight/normal/wide/wider) are
+        // also Tailwind's, and redefining a stock utility to a different value
+        // under an unchanged name is the antipattern this file was rewritten
+        // to remove. HDS's generated config applies the same rule.
+        //
+        // Without this, ten components here reached for `tracking-wide` —
+        // Tailwind's stock 0.025em, 42% of the 0.06em the eyebrow token
+        // specifies. Same bypass hds#283 found inside HDS itself; same cause,
+        // which is that the right utility did not exist.
+        caps: 'var(--primitive-typography-letterSpacing-caps)',
       },
       borderRadius: {
-        action: '12px',     // semantic.radius.action — buttons, inputs, badges
-        container: '8px',   // primitive.radius.8 — cards, sheets, modals
+        action: 'var(--semantic-radius-action)',      // buttons, inputs, badges
+        container: 'var(--primitive-radius-12)',      // cards, sheets, modals
       },
       maxWidth: {
         prose: '60ch',
