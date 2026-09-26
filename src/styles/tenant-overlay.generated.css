@@ -12,15 +12,15 @@
  */
 
 :root {
-  --semantic-accent-content: #75593A; /* PLACEHOLDER accent text color — used for links and accent labels. Adrian to specify final hex. */
-  --semantic-accent-hover: #75593A; /* PLACEHOLDER warm stone hover — slightly darker than rest. Adrian to specify final hex. */
-  --semantic-accent-pressed: #5C432A; /* PLACEHOLDER warm stone pressed — deepest tone. Adrian to specify final hex. */
-  --semantic-accent-rest: #8B6F47; /* PLACEHOLDER warm stone — Concrete Creations primary accent. Adrian to specify final hex. */
-  --semantic-accent-subtle: #F5EFE7; /* PLACEHOLDER warm stone tint — faint accent surface for hover halos. Adrian to specify final hex. */
-  --semantic-color-border-accent: #8B6F47; /* PLACEHOLDER accent border / focus ring. Adrian to specify final hex. */
-  --semantic-color-content-accent: #75593A; /* PLACEHOLDER accent text colour — links and accent labels rendered as TEXT. Distinct from semantic.accent.conte */
-  --semantic-color-surface-accent: #8B6F47; /* PLACEHOLDER accent surface fill (CTAs, primary buttons). Adrian to specify final hex. */
-  --semantic-color-surface-accentSubtle: #F5EFE7; /* PLACEHOLDER faint accent tint surface. Adrian to specify final hex. */
+  --semantic-accent-content: #75593A; /* Accent text color — used for links and accent labels. Final (Adrian, 2026-09-26). */
+  --semantic-accent-hover: #75593A; /* Accent hover — slightly darker than rest. Final (Adrian, 2026-09-26). */
+  --semantic-accent-pressed: #5C432A; /* Accent pressed — deepest tone. Final (Adrian, 2026-09-26). */
+  --semantic-accent-rest: #8B6F47; /* Concrete Creations primary accent — final (Adrian, 2026-09-26). */
+  --semantic-accent-subtle: #F5EFE7; /* Accent tint — faint accent surface for hover halos. Final (Adrian, 2026-09-26). */
+  --semantic-color-border-accent: #8B6F47; /* Accent border / focus ring. Final (Adrian, 2026-09-26). */
+  --semantic-color-content-accent: #75593A; /* Accent text colour — links and accent labels rendered as TEXT. Distinct from semantic.accent.content, which is */
+  --semantic-color-surface-accent: #8B6F47; /* Accent surface fill (CTAs, primary buttons). Final (Adrian, 2026-09-26). */
+  --semantic-color-surface-accentSubtle: #F5EFE7; /* Faint accent tint surface. Final (Adrian, 2026-09-26). */
 }
 
 [data-theme="dark"] {
