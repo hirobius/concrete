@@ -8,3 +8,7 @@ tsconfig.tsbuildinfo
 .env.*.local
 *.log
 .DS_Store
+
+# Raw product photography (source for scripts/process-product-photos.mjs).
+# See docs/PRODUCT-IMAGES.md — outputs go to public/products/, which IS committed.
+photos-src/
