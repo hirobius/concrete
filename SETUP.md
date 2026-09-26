@@ -37,7 +37,10 @@ The site should render with placeholder products and broken images
    - One-time payment, USD
 4. Copy the resulting `price_xxx` ID into the matching entry's
    `stripePriceId` field in `data/products.json`. Replace the
-   `price_TODO_form_NN` placeholders.
+   `price_TODO_form_NN` placeholders — `pnpm catalog:add -- --edit <slug>`
+   walks you through this field-by-field, or edit the JSON directly and
+   check it with `pnpm catalog:validate`. Full authoring flow (adding a
+   product from scratch, the validation rules): `docs/CATALOG-AUTHORING.md`.
 5. Get keys from <https://dashboard.stripe.com/apikeys>:
    - `STRIPE_SECRET_KEY` → `.env.local`
 

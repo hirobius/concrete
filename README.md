@@ -26,11 +26,22 @@ stripe listen --forward-to localhost:5180/api/stripe-webhook
 
 ## Adding a Form
 
-1. Add an entry to `data/products.json` (see existing entries for shape).
+```bash
+pnpm catalog:add
+```
+
+Guided flow — prompts for each field and validates before writing (schema:
+`scripts/lib/product-schema.mjs`). Full walkthrough, including editing an
+existing entry and the validation rules: `docs/CATALOG-AUTHORING.md`.
+
+1. `pnpm catalog:add` — title, subtitle, story, dimensions, materials, price,
+   edition counts, images.
 2. Drop product photos in `public/products/<slug>/`.
 3. Create the Stripe product + price in the Stripe Dashboard.
-4. Paste the resulting `price_xxx` into the entry's `stripePriceId`.
-5. Commit. Vercel rebuilds. Live.
+4. Paste the resulting `price_xxx` in when prompted (or `pnpm catalog:add --
+   --edit <slug>` after).
+5. `pnpm check:launch` to catch placeholders before they ship.
+6. Commit. Vercel rebuilds. Live.
 
 ## Sale flow
 
