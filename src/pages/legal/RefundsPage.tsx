@@ -1,12 +1,12 @@
 export default function RefundsPage() {
   return (
     <article className="container-page py-20 max-w-editorial">
-      <h1 className="text-3xl md:text-4xl">Refund &amp; Return Policy</h1>
-      <p className="mt-2 text-xs uppercase tracking-caps text-secondary">DRAFT — review with counsel before launch.</p>
+      <h1 className="text-h1">Refund &amp; Return Policy</h1>
+      <p className="mt-2 text-eyebrow text-secondary">DRAFT — review with counsel before launch.</p>
 
-      <div className="mt-10 space-y-6 text-primary leading-relaxed text-sm">
+      <div className="mt-10 space-y-6 text-primary text-body">
         <section>
-          <h2 className="text-lg text-primary">Made-to-order, final sale</h2>
+          <h2 className="text-h3 text-primary">Made-to-order, final sale</h2>
           <p>
             Each Form is hand-cast to order as part of a small, numbered
             edition. Because of this, we do not accept returns or exchanges
@@ -17,7 +17,7 @@ export default function RefundsPage() {
           </p>
         </section>
         <section>
-          <h2 className="text-lg text-primary">Damaged or lost in transit</h2>
+          <h2 className="text-h3 text-primary">Damaged or lost in transit</h2>
           <p>
             If a piece arrives damaged, or does not arrive, email{' '}
             <a href="mailto:studio@hirobius.com" className="underline">studio@hirobius.com</a>{' '}
@@ -28,7 +28,7 @@ export default function RefundsPage() {
           </p>
         </section>
         <section>
-          <h2 className="text-lg text-primary">Defects</h2>
+          <h2 className="text-h3 text-primary">Defects</h2>
           <p>
             Hand-cast surface texture, slight color shift, and small
             inclusions are inherent to the material and are not defects —
@@ -38,7 +38,7 @@ export default function RefundsPage() {
           </p>
         </section>
         <section>
-          <h2 className="text-lg text-primary">How refunds are issued</h2>
+          <h2 className="text-h3 text-primary">How refunds are issued</h2>
           <p>
             Approved refunds are issued to the original payment method
             through Stripe, typically within 5–10 business days of approval.

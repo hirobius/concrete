@@ -46,15 +46,15 @@ export default function CartDrawer() {
         aria-hidden={!isOpen}
       >
         <div className="flex items-center justify-between border-b border-borderSubtle px-6 h-16 shrink-0">
-          <h2 className="text-lg">Cart</h2>
-          <button onClick={close} className="text-sm uppercase tracking-caps hover:opacity-60">
+          <h2 className="text-h3">Cart</h2>
+          <button onClick={close} className="text-eyebrow hover:opacity-60">
             Close
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {lines.length === 0 ? (
-            <p className="text-secondary text-sm">Your cart is empty.</p>
+            <p className="text-secondary text-ui">Your cart is empty.</p>
           ) : (
             <ul className="space-y-6">
               {lines.map(({ product, quantity }) => (
@@ -71,8 +71,8 @@ export default function CartDrawer() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-display">{product.title}</p>
-                    <p className="text-xs text-secondary mt-1">{product.subtitle}</p>
-                    <div className="mt-3 flex items-center gap-2 text-sm">
+                    <p className="text-caption text-secondary mt-1">{product.subtitle}</p>
+                    <div className="mt-3 flex items-center gap-2 text-ui">
                       <button
                         onClick={() => setQuantity(product.slug, quantity - 1)}
                         className="w-7 h-7 border border-borderDefault hover:border-borderStrong"
@@ -90,7 +90,7 @@ export default function CartDrawer() {
                       </button>
                       <button
                         onClick={() => remove(product.slug)}
-                        className="ml-auto text-xs uppercase tracking-caps text-secondary hover:text-error"
+                        className="ml-auto text-eyebrow text-secondary hover:text-error"
                       >
                         Remove
                       </button>
@@ -105,15 +105,15 @@ export default function CartDrawer() {
 
         {lines.length > 0 && (
           <div className="border-t border-borderSubtle px-6 py-6 space-y-4 shrink-0">
-            <div className="flex items-baseline justify-between text-sm">
-              <span className="uppercase tracking-caps">Subtotal</span>
+            <div className="flex items-baseline justify-between text-ui">
+              <span className="text-eyebrow">Subtotal</span>
               <span className="font-display text-base tabular-nums">${subtotal}</span>
             </div>
-            <p className="text-xs text-secondary">
+            <p className="text-caption text-secondary">
               Free US shipping &amp; Spokane local pickup. WA sales tax (fixed
               Spokane rate) added at checkout.
             </p>
-            {error && <p className="text-xs text-error">{error}</p>}
+            {error && <p className="text-caption text-error">{error}</p>}
             <button onClick={onCheckout} disabled={pending} className="btn-primary w-full">
               {pending ? 'Redirecting…' : 'Checkout'}
             </button>
