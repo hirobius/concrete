@@ -27,9 +27,8 @@ family that resonates with the material vocabulary of the products.
 
 ## Status
 
-**`scaffold`** — values are PLACEHOLDER hexes. Adrian will land final brand
-hexes once the brand identity work concludes. Until then, do not deploy
-this tenant to a production domain.
+**Final** — brand hexes above are final (Adrian, 2026-09-26): `#8B6F47`
+rest, `#75593A` hover/text, `#5C432A` pressed, `#F5EFE7` subtle.
 
 ## Deployment plan
 

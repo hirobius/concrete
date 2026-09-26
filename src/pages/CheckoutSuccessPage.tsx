@@ -11,11 +11,11 @@ export default function CheckoutSuccessPage() {
 
   return (
     <article className="container-page py-32 max-w-editorial text-center">
-      <p className="text-xs uppercase tracking-caps text-secondary">Order received</p>
-      <h1 className="mt-4 text-4xl md:text-5xl leading-[1.1]">
+      <p className="text-eyebrow uppercase text-secondary">Order received</p>
+      <h1 className="mt-4 text-display">
         Thank you.
       </h1>
-      <p className="mt-8 text-primary leading-relaxed">
+      <p className="mt-8 text-primary text-body">
         A confirmation email is on its way. Each piece is wrapped and shipped
         from Spokane within 3–5 business days. If you chose local pickup,
         we'll be in touch with details.

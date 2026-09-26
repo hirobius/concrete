@@ -10,7 +10,8 @@ import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
 import CheckoutCancelPage from './pages/CheckoutCancelPage';
 import TermsPage from './pages/legal/TermsPage';
 import PrivacyPage from './pages/legal/PrivacyPage';
-import ShippingReturnsPage from './pages/legal/ShippingReturnsPage';
+import ShippingPage from './pages/legal/ShippingPage';
+import RefundsPage from './pages/legal/RefundsPage';
 
 export default function App() {
   return (
@@ -26,7 +27,8 @@ export default function App() {
           <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
           <Route path="/legal/terms" element={<TermsPage />} />
           <Route path="/legal/privacy" element={<PrivacyPage />} />
-          <Route path="/legal/shipping-returns" element={<ShippingReturnsPage />} />
+          <Route path="/legal/shipping" element={<ShippingPage />} />
+          <Route path="/legal/refunds" element={<RefundsPage />} />
         </Routes>
       </main>
       <Footer />

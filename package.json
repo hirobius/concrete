@@ -3,12 +3,16 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "description": "Hirobius Studio \u2014 concrete figurine storefront. Vite + React Router + Tailwind + Stripe Checkout.",
+  "description": "Hirobius Studio — concrete figurine storefront. Vite + React Router + Tailwind + Stripe Checkout.",
   "scripts": {
     "build": "tsc -b && vite build",
+    "catalog:add": "node scripts/add-product.mjs",
+    "catalog:validate": "node scripts/lib/product-schema.mjs",
     "check:launch": "node scripts/generate-tenant-overlay.mjs --check && node scripts/check-launch-ready.mjs",
     "dev": "vite",
+    "photos": "node scripts/process-product-photos.mjs",
     "preview": "vite preview",
+    "test": "node --test scripts/lib/*.test.mjs scripts/*.test.mjs",
     "tokens:check": "node scripts/generate-tenant-overlay.mjs --check",
     "tokens:overlay": "node scripts/generate-tenant-overlay.mjs",
     "typecheck": "tsc --noEmit"
@@ -28,6 +32,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "sharp": "^0.35.4",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
     "vite": "^5.4.8"

@@ -21,6 +21,14 @@ export type ProductArtist = {
   splitPercent: number;
 };
 
+/**
+ * Schema/validator: `scripts/lib/product-schema.mjs` (`validateProduct` /
+ * `validateCatalog`). Keep the two in sync by hand — there is no codegen
+ * between them, deliberately, so the shape lives once here and the runtime
+ * rules live once there. Enforced by the `product-schema` check in
+ * `scripts/check-launch-ready.mjs` and by the guided authoring flow,
+ * `pnpm catalog:add` (`scripts/add-product.mjs`); see `docs/CATALOG-AUTHORING.md`.
+ */
 export type Product = {
   slug: string;
   title: string;

@@ -25,6 +25,7 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateCatalog } from './lib/product-schema.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const JSON_OUT = process.argv.includes('--json');
@@ -42,6 +43,19 @@ const PLACEHOLDER_PRICE = /^price_(sample|TODO|test)|TODO/i;
 const isPlaceholderImage = (src) => typeof src === 'string' && src.startsWith('data:');
 
 const checks = [
+  {
+    name: 'product-schema',
+    why: 'A malformed product (bad slug, missing alt text, remaining > total, a price that never got real cents) should fail here — not at checkout, and not silently on the product page.',
+    run() {
+      const { list } = products();
+      const { ok, errors } = validateCatalog(list);
+      return {
+        ok,
+        detail: ok ? `${list.length} product(s), schema-valid` : errors.join('\n      '),
+        fix: 'Fix the listed field(s) in data/products.json (or run `node scripts/lib/product-schema.mjs` for the same report), or use `pnpm catalog:add` to author a new entry that is validated before it is written.',
+      };
+    },
+  },
   {
     name: 'font-weights-loaded',
     why: 'A weight the tokens ask for but the page never loads is faux-rendered by the browser. Nothing errors, nothing looks broken — the letterforms are just quietly wrong, on every heading, forever.',

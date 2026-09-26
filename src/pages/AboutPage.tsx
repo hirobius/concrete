@@ -1,11 +1,11 @@
 export default function AboutPage() {
   return (
     <article className="container-page py-20 md:py-28 max-w-editorial">
-      <h1 className="text-4xl md:text-5xl leading-[1.1]">
+      <h1 className="text-display">
         About the studio
       </h1>
 
-      <div className="mt-12 space-y-6 text-primary leading-relaxed">
+      <div className="mt-12 space-y-6 text-primary text-body">
         <p>
           Hirobius Studio is the maker arm of Hirobius LLC, a Washington
           State company. The studio produces small editions of hand-cast

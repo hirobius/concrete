@@ -15,7 +15,8 @@ export default function Footer() {
         </div>
         <div className="space-y-2">
           <p className="text-eyebrow text-primary">Policies</p>
-          <Link to="/legal/shipping-returns" className="block hover:text-primary transition-colors">Shipping &amp; Returns</Link>
+          <Link to="/legal/shipping" className="block hover:text-primary transition-colors">Shipping</Link>
+          <Link to="/legal/refunds" className="block hover:text-primary transition-colors">Refunds &amp; Returns</Link>
           <Link to="/legal/terms" className="block hover:text-primary transition-colors">Terms</Link>
           <Link to="/legal/privacy" className="block hover:text-primary transition-colors">Privacy</Link>
         </div>

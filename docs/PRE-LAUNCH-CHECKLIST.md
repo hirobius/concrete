@@ -49,9 +49,8 @@ green.
 
 ## 5. Tax & legal
 
-- [ ] WA sales tax computed correctly at checkout for a few test addresses (Spokane, Seattle, Vancouver WA, out-of-state)
-- [ ] Stripe Tax handles destination-based tax for other states (or fallback: flat-rate WA-only with a "we don't ship outside WA yet" disclosure)
-- [ ] `/legal/terms`, `/legal/privacy`, `/legal/shipping-returns` all reviewed and linked from the site footer
+- [ ] WA sales tax applied at checkout via the fixed Spokane `STRIPE_TAX_RATE_ID` rate on every order (Adrian, 2026-09-26 — not Stripe Tax; revisit if out-of-state volume grows)
+- [ ] `/legal/terms`, `/legal/privacy`, `/legal/shipping`, `/legal/refunds` all reviewed and linked from the site footer
 - [ ] All `// TODO: legal review` comments in the legal pages addressed
 - [ ] Business license/registration current with WA Department of Revenue
 
