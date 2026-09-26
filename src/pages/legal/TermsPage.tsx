@@ -2,7 +2,7 @@ export default function TermsPage() {
   return (
     <article className="container-page py-20 max-w-editorial prose-sm">
       <h1 className="text-3xl md:text-4xl">Terms of Sale</h1>
-      <p className="mt-2 text-xs uppercase tracking-caps text-secondary">Placeholder — review with counsel before launch.</p>
+      <p className="mt-2 text-xs uppercase tracking-caps text-secondary">DRAFT — review with counsel before launch.</p>
 
       <div className="mt-10 space-y-6 text-primary leading-relaxed text-sm">
         <section>
@@ -23,16 +23,19 @@ export default function TermsPage() {
         <section>
           <h2 className="text-lg text-primary">3. Pricing &amp; payment</h2>
           <p>
-            Prices are in U.S. dollars. Sales tax is calculated at checkout
-            based on the destination address. Payment is processed by Stripe;
-            Hirobius does not store card information.
+            Prices are in U.S. dollars. We collect Washington State sales tax
+            at a fixed rate for our Spokane location on every order — a rate
+            set once in Stripe, not calculated per destination (we do not use
+            Stripe Tax). Payment is processed by Stripe; Hirobius does not
+            store card information.
           </p>
         </section>
         <section>
           <h2 className="text-lg text-primary">4. Shipping &amp; risk of loss</h2>
           <p>
             Title and risk of loss pass to the buyer on delivery to the carrier.
-            See <a href="/legal/shipping-returns" className="underline">Shipping &amp; Returns</a> for full terms.
+            See <a href="/legal/shipping" className="underline">Shipping</a> and{' '}
+            <a href="/legal/refunds" className="underline">Refunds &amp; Returns</a> for full terms.
           </p>
         </section>
         <section>

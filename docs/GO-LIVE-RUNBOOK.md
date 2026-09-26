@@ -29,9 +29,11 @@ in there is checked. This doc is for the actual flip-the-switch day.
 
 ## T-1 day
 
-- [ ] Final read of the 3 legal pages (`/legal/terms`, `/legal/privacy`,
-      `/legal/shipping-returns`) — no surviving `// TODO`s
-- [ ] WA sales tax verified at checkout one more time
+- [ ] Final read of the 4 legal pages (`/legal/terms`, `/legal/privacy`,
+      `/legal/shipping`, `/legal/refunds`) — no surviving `// TODO`s, attorney
+      review done (they ship as DRAFT until then)
+- [ ] WA sales tax verified at checkout one more time (fixed Spokane rate via
+      `STRIPE_TAX_RATE_ID`, not Stripe Tax — hirobius/concrete#5)
 - [ ] Domain renewal status checked (don't get caught with an expired
       cert in the middle of launch)
 - [ ] Block out the launch morning + afternoon on your calendar — no

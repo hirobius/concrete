@@ -28,6 +28,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const siteUrl = process.env.VITE_SITE_URL ?? `https://${req.headers.host ?? 'hirobius.studio'}`;
 
+  // WA sales tax: a fixed rate for our Spokane location, set once in Stripe
+  // (dashboard.stripe.com/tax-rates) — not Stripe Tax (Adrian, 2026-09-26,
+  // hirobius/concrete#5). The id is config, never a hardcoded rate/secret.
+  const taxRateId = process.env.STRIPE_TAX_RATE_ID;
+  if (!taxRateId) {
+    res.status(500).json({
+      error:
+        'STRIPE_TAX_RATE_ID is not configured — create the fixed WA/Spokane sales-tax rate at https://dashboard.stripe.com/tax-rates, copy its txr_… id, and set STRIPE_TAX_RATE_ID in Vercel → Settings → Environment Variables (Production + Preview), then redeploy.',
+    });
+    return;
+  }
+
   let body: { items?: IncomingItem[] };
   try {
     body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
@@ -61,6 +73,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       price: product.stripePriceId,
       quantity: it.quantity,
       adjustable_quantity: { enabled: true, minimum: 1, maximum: product.edition.remaining },
+      tax_rates: [taxRateId],
     });
   }
 
@@ -95,10 +108,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           },
         },
       ],
-      // TODO: enable Stripe Tax when ready ($120/yr) — handles automatic
-      // sales-tax calc by destination. Until then, sales tax is not
-      // collected at checkout (WA only, below multi-state nexus thresholds).
-      // automatic_tax: { enabled: true },
       success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/checkout/cancel`,
       metadata: {

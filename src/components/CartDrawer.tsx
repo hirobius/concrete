@@ -110,7 +110,8 @@ export default function CartDrawer() {
               <span className="font-display text-base tabular-nums">${subtotal}</span>
             </div>
             <p className="text-xs text-secondary">
-              Free US shipping &amp; Spokane local pickup. Tax calculated at checkout.
+              Free US shipping &amp; Spokane local pickup. WA sales tax (fixed
+              Spokane rate) added at checkout.
             </p>
             {error && <p className="text-xs text-error">{error}</p>}
             <button onClick={onCheckout} disabled={pending} className="btn-primary w-full">

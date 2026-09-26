@@ -67,6 +67,7 @@ The site should render with placeholder products and broken images
    | --- | --- | --- |
    | `STRIPE_SECRET_KEY` | yes | Production-only scope initially |
    | `STRIPE_WEBHOOK_SECRET` | yes | Production-only scope initially |
+   | `STRIPE_TAX_RATE_ID` | yes | WA sales tax, fixed Spokane rate (Adrian, 2026-09-26 — not Stripe Tax). Create it at <https://dashboard.stripe.com/tax-rates> ("New tax rate" → Washington/Spokane combined rate, inclusive: No), then copy its `txr_…` id here. Checkout fails loud with this exact message if unset. |
    | `DISCORD_SALES_WEBHOOK_URL` | yes | sale notifications |
    | `VITE_SITE_URL` | optional | Stripe success/cancel URLs. Falls back to the request host, so it works unset — set it explicitly if the site is ever reached on more than one hostname |
 4. Add `hirobius.studio` and `www.hirobius.studio` as custom domains.
