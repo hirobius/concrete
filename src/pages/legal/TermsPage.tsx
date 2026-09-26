@@ -2,7 +2,7 @@ export default function TermsPage() {
   return (
     <article className="container-page py-20 max-w-editorial prose-sm">
       <h1 className="text-h1">Terms of Sale</h1>
-      <p className="mt-2 text-eyebrow text-secondary">DRAFT — review with counsel before launch.</p>
+      <p className="mt-2 text-eyebrow uppercase text-secondary">DRAFT — review with counsel before launch.</p>
 
       <div className="mt-10 space-y-6 text-primary text-body">
         <section>

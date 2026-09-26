@@ -11,7 +11,7 @@ export default function CheckoutSuccessPage() {
 
   return (
     <article className="container-page py-32 max-w-editorial text-center">
-      <p className="text-eyebrow text-secondary">Order received</p>
+      <p className="text-eyebrow uppercase text-secondary">Order received</p>
       <h1 className="mt-4 text-display">
         Thank you.
       </h1>
