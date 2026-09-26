@@ -60,6 +60,14 @@ test('materials must be a non-empty array of non-empty strings', () => {
   assert.equal(validateProduct(validProduct({ materials: 'concrete' })).ok, false);
 });
 
+test('weightLbs must be a number > 0', () => {
+  assert.equal(validateProduct(validProduct({ weightLbs: 0 })).ok, false);
+  assert.equal(validateProduct(validProduct({ weightLbs: -1 })).ok, false);
+  assert.equal(validateProduct(validProduct({ weightLbs: 'heavy' })).ok, false);
+  assert.equal(validateProduct({ ...validProduct(), weightLbs: undefined }).ok, false);
+  assert.equal(validateProduct(validProduct({ weightLbs: 0.5 })).ok, true);
+});
+
 test('priceUsd must be > 0', () => {
   assert.equal(validateProduct(validProduct({ priceUsd: 0 })).ok, false);
   assert.equal(validateProduct(validProduct({ priceUsd: -5 })).ok, false);

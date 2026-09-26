@@ -58,6 +58,7 @@ committing.
 
 - `slug` — required, kebab-case, unique across the catalog.
 - `title`, `subtitle`, `story`, `dimensions` — required non-empty strings.
+- `weightLbs` — number, `> 0`.
 - `materials` — non-empty array of non-empty strings.
 - `priceUsd` — number, `> 0`.
 - `stripePriceId` — non-empty string starting with `price_`.

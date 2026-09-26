@@ -10,7 +10,7 @@
  *    to call the catalog launch-ready while an entry is malformed.
  *  - `scripts/add-product.mjs` (the guided authoring flow) — refuses to
  *    write an entry that would fail here.
- *  - `pnpm test:products` — unit tests in `product-schema.test.mjs`.
+ *  - `pnpm test` — unit tests in `product-schema.test.mjs`.
  *
  * Usage as a CLI:
  *   node scripts/lib/product-schema.mjs [path/to/products.json]
@@ -52,6 +52,11 @@ export function validateProduct(product, { path: at = '' } = {}) {
   // required strings
   for (const field of ['title', 'subtitle', 'story', 'dimensions']) {
     if (!isNonEmptyString(product[field])) err(`${field} is required and must be a non-empty string`);
+  }
+
+  // weightLbs
+  if (!isFiniteNumber(product.weightLbs) || product.weightLbs <= 0) {
+    err(`weightLbs must be a number > 0 (got ${JSON.stringify(product.weightLbs)})`);
   }
 
   // materials

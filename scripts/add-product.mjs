@@ -67,7 +67,7 @@ async function promptProduct(rl, existing) {
   const subtitle = await ask(rl, 'subtitle', { default: existing?.subtitle });
   const story = await ask(rl, 'story', { default: existing?.story });
   const dimensions = await ask(rl, 'dimensions (e.g. 120 × 80 × 80 mm)', { default: existing?.dimensions });
-  const weightLbs = await askNumber(rl, 'weightLbs', { default: existing?.weightLbs ?? 0 });
+  const weightLbs = await askNumber(rl, 'weightLbs', { default: existing?.weightLbs });
   const materials = existing?.materials?.length && !(await ask(rl, 'change materials? (y/N)', { default: 'n', required: false })).toLowerCase().startsWith('y')
     ? existing.materials
     : await askList(rl, 'materials');
