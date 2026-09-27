@@ -181,3 +181,15 @@
     color: var(--semantic-color-content-secondary);
   }
 }
+
+@layer utilities {
+  /* Tailwind's fontSize core plugin only reads lineHeight/letterSpacing/
+     fontWeight from the theme.fontSize.eyebrow tuple in tailwind.config.ts —
+     it silently drops a fontFamily key, so the generated `.text-eyebrow`
+     utility never carried the eyebrow typeface. Composing the family on here
+     keeps `text-eyebrow` a single class everywhere it's already used, instead
+     of pushing a second `font-*` class into every component (ops#16 review). */
+  .text-eyebrow {
+    font-family: var(--semantic-typography-eyebrow-font-family);
+  }
+}

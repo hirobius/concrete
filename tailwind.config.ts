@@ -94,6 +94,10 @@ const config: Config = {
           lineHeight: 'var(--semantic-typography-eyebrow-line-height)',
           fontWeight: 'var(--semantic-typography-eyebrow-font-weight)',
           letterSpacing: 'var(--semantic-typography-eyebrow-letter-spacing)',
+          // fontFamily is NOT read by Tailwind's fontSize core plugin (it only
+          // consumes lineHeight/letterSpacing/fontWeight from this tuple) — the
+          // family is applied to the generated .text-eyebrow utility in
+          // globals.css instead, so `text-eyebrow` stays a single class.
         }],
         mono: ['var(--semantic-typography-mono-font-size)', {
           lineHeight: 'var(--semantic-typography-mono-line-height)',

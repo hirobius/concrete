@@ -107,7 +107,7 @@ export default function CartDrawer() {
           <div className="border-t border-borderSubtle px-6 py-6 space-y-4 shrink-0">
             <div className="flex items-baseline justify-between text-ui">
               <span className="text-eyebrow uppercase">Subtotal</span>
-              <span className="font-display text-base tabular-nums">${subtotal}</span>
+              <span className="font-display text-h3 tabular-nums">${subtotal}</span>
             </div>
             <p className="text-caption text-secondary">
               Free US shipping &amp; Spokane local pickup. WA sales tax (fixed
