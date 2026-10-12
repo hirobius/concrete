@@ -77,3 +77,13 @@ product's derivatives (safe to re-run after reshoots).
 
 Script: `scripts/process-product-photos.mjs`. Uses `sharp` (devDependency —
 build-time only, never ships to the client bundle).
+
+## Getting photos in (from a phone or Drive)
+
+`pnpm photos:intake -- <input> <slug> <NN-angle>` (`scripts/intake-photo.mjs`)
+writes `photos-src/<slug>/<NN-angle>.jpg` from a raw image file or a saved
+Google Drive download result. It converts HEIC (the iPhone default, which the
+prebuilt `sharp` can't read) to JPEG and bakes the phone's EXIF rotation into
+the pixels. The pipeline above also applies EXIF rotation, so a shot taken
+sideways never publishes sideways. Output files carry no metadata, GPS
+included. The end-to-end flow is in `docs/PUBLISHING.md`.

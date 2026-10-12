@@ -60,7 +60,9 @@ export function planOutputs(parsedSources) {
 }
 
 async function resizeToWebp(inputPath, outputPath, resizeOpts) {
-  await sharp(inputPath).resize(resizeOpts).webp({ quality: 82 }).toFile(outputPath);
+  // .rotate() with no args applies the EXIF orientation, so phone shots are
+  // not published sideways. Output metadata (incl. GPS) is stripped by default.
+  await sharp(inputPath).rotate().resize(resizeOpts).webp({ quality: 82 }).toFile(outputPath);
 }
 
 /**

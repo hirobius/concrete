@@ -9,8 +9,15 @@
  * and refuses to write anything invalid.
  *
  * Usage:
- *   pnpm catalog:add                # add a new product, interactively
- *   pnpm catalog:add -- --edit SLUG # edit an existing product's fields
+ *   pnpm catalog:add                          # add a new product, interactively
+ *   pnpm catalog:add -- --edit SLUG           # edit an existing product's fields
+ *   pnpm catalog:add -- --from FILE.json      # add one product non-interactively
+ *   pnpm catalog:add -- --from FILE.json --replace  # …or overwrite that slug
+ *
+ * `--from` is the agent path (the publish-product skill writes a draft entry
+ * to a file and hands it here), so it goes through the exact same validation
+ * as the prompts. It refuses to overwrite an existing slug unless `--replace`
+ * is given — a slug collision is far more likely a mistake than an intent.
  *
  * Does not touch Stripe or photography — see docs/CATALOG-AUTHORING.md for
  * where those steps happen in the flow.
@@ -23,7 +30,10 @@ import { createInterface } from 'node:readline/promises';
 import { validateProduct, validateCatalog, PRODUCT_STATUSES } from './lib/product-schema.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const CATALOG_PATH = path.join(ROOT, 'data', 'products.json');
+// `--catalog PATH` points at another file (tests use a temp copy, never the real catalog).
+const catalogArg = process.argv.indexOf('--catalog');
+const CATALOG_PATH =
+  catalogArg !== -1 ? path.resolve(process.argv[catalogArg + 1]) : path.join(ROOT, 'data', 'products.json');
 
 function loadCatalog() {
   const raw = JSON.parse(readFileSync(CATALOG_PATH, 'utf8'));
@@ -112,13 +122,74 @@ async function promptProduct(rl, existing) {
   return product;
 }
 
+/**
+ * Validate `product` on its own and inside the resulting catalog, then write.
+ * Returns true on success; prints every error and returns false otherwise.
+ */
+function commitProduct(raw, list, product, targetIndex) {
+  const { ok, errors } = validateProduct(product);
+  if (!ok) {
+    console.error('\nadd-product: not written — this entry fails validation:\n');
+    for (const e of errors) console.error(`  - ${e}`);
+    return false;
+  }
+
+  const nextList = targetIndex === -1 ? [...list, product] : list.map((p, i) => (i === targetIndex ? product : p));
+  const { ok: catalogOk, errors: catalogErrors } = validateCatalog(nextList);
+  if (!catalogOk) {
+    console.error('\nadd-product: not written — the resulting catalog fails validation:\n');
+    for (const e of catalogErrors) console.error(`  - ${e}`);
+    return false;
+  }
+
+  if (Array.isArray(raw)) {
+    saveCatalog(nextList);
+  } else {
+    saveCatalog({ ...raw, products: nextList });
+  }
+  console.log(`\n✓ ${targetIndex === -1 ? 'added' : 'updated'} "${product.slug}" in ${path.relative(ROOT, CATALOG_PATH)}`);
+  return true;
+}
+
+/** Non-interactive path: one product object from a JSON file. */
+function addFromFile(raw, list, file, replace) {
+  let product;
+  try {
+    product = JSON.parse(readFileSync(path.resolve(file), 'utf8'));
+  } catch (e) {
+    console.error(`add-product: could not read/parse ${file}: ${e.message}`);
+    return false;
+  }
+  if (!product || typeof product !== 'object' || Array.isArray(product)) {
+    console.error(`add-product: ${file} must contain a single product object`);
+    return false;
+  }
+
+  const targetIndex = list.findIndex((p) => p.slug === product.slug);
+  if (targetIndex !== -1 && !replace) {
+    console.error(
+      `add-product: not written — "${product.slug}" already exists.\n` +
+        '  fix: pick a new slug, or pass --replace to overwrite the existing entry.',
+    );
+    return false;
+  }
+  return commitProduct(raw, list, product, targetIndex);
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const editIdx = args.indexOf('--edit');
   const editSlug = editIdx !== -1 ? args[editIdx + 1] : null;
+  const fromIdx = args.indexOf('--from');
+  const fromFile = fromIdx !== -1 ? args[fromIdx + 1] : null;
 
   const raw = loadCatalog();
   const list = Array.isArray(raw) ? raw : (raw.products ?? []);
+
+  if (fromFile) {
+    if (!addFromFile(raw, list, fromFile, args.includes('--replace'))) process.exitCode = 1;
+    return;
+  }
 
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   try {
@@ -137,29 +208,10 @@ async function main() {
       product = await promptProduct(rl, null);
     }
 
-    const { ok, errors } = validateProduct(product);
-    if (!ok) {
-      console.error('\nadd-product: not written — this entry fails validation:\n');
-      for (const e of errors) console.error(`  - ${e}`);
+    if (!commitProduct(raw, list, product, targetIndex)) {
       process.exitCode = 1;
       return;
     }
-
-    const nextList = targetIndex === -1 ? [...list, product] : list.map((p, i) => (i === targetIndex ? product : p));
-    const { ok: catalogOk, errors: catalogErrors } = validateCatalog(nextList);
-    if (!catalogOk) {
-      console.error('\nadd-product: not written — the resulting catalog fails validation:\n');
-      for (const e of catalogErrors) console.error(`  - ${e}`);
-      process.exitCode = 1;
-      return;
-    }
-
-    if (Array.isArray(raw)) {
-      saveCatalog(nextList);
-    } else {
-      saveCatalog({ ...raw, products: nextList });
-    }
-    console.log(`\n✓ ${targetIndex === -1 ? 'added' : 'updated'} "${product.slug}" in ${path.relative(ROOT, CATALOG_PATH)}`);
     console.log('  Next: drop photos in public/products/<slug>/, create the Stripe product/price if you used a price_TODO_ placeholder, then run `pnpm check:launch`.');
   } finally {
     rl.close();

@@ -137,3 +137,25 @@ test('processProduct throws a clear error when the source folder has no matching
     );
   });
 });
+
+test('processProduct honours EXIF orientation (phone photos are not published sideways)', async () => {
+  // Phones often store a portrait shot as landscape pixels + an EXIF
+  // "rotate 90°" tag (orientation 6). The derivatives must come out portrait.
+  const root = await mkdtemp(path.join(tmpdir(), 'photos-exif-'));
+  const sourceRoot = path.join(root, 'src');
+  const outputRoot = path.join(root, 'out');
+  try {
+    await mkdir(path.join(sourceRoot, 'tilted'), { recursive: true });
+    await sharp({ create: { width: 1600, height: 1200, channels: 3, background: '#888' } })
+      .withMetadata({ orientation: 6 })
+      .jpeg()
+      .toFile(path.join(sourceRoot, 'tilted', '01-front.jpg'));
+
+    await processProduct('tilted', { sourceRoot, outputRoot });
+
+    const meta = await sharp(path.join(outputRoot, 'tilted', '01-front-1200.webp')).metadata();
+    assert.ok(meta.height > meta.width, `expected portrait, got ${meta.width}×${meta.height}`);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
