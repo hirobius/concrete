@@ -31,6 +31,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: HDS token discipline (no raw colors in src)
+        run: pnpm tokens:discipline
+
       - name: Tenant overlay in sync
         run: pnpm tokens:check
 

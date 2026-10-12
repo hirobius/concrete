@@ -16,7 +16,8 @@
     "tokens:check": "node scripts/generate-tenant-overlay.mjs --check",
     "tokens:overlay": "node scripts/generate-tenant-overlay.mjs",
     "typecheck": "tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "tokens:discipline": "node scripts/check-token-discipline.mjs"
   },
   "dependencies": {
     "@hirobius/design-system": "^0.15.0",
