@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
+import { createStoreFromEnv, processStripeEvent } from './_lib/inventory.mjs';
 
 export const config = {
   api: { bodyParser: false },
@@ -67,18 +68,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session;
-    await postToDiscord(formatSaleMessage(session));
-
-    // TODO: decrement edition.remaining in data/products.json.
-    // Two viable patterns:
-    //   (a) Vercel KV / Upstash Redis for atomic decrement, then nightly
-    //       sync back to products.json via a cron action.
-    //   (b) GitHub API write to products.json + Vercel auto-redeploy
-    //       (slow but version-controlled).
-    // For now: Discord notification fires and Adrian updates the JSON
-    // manually via PR. Acceptable at 1–3 SKU launch volume.
+  // Stock was already taken when the Checkout Session was created, so a
+  // completed sale only needs the Discord post; an expired session gives its
+  // reservation back. Both are idempotent by event id (see _lib/inventory.mjs).
+  try {
+    await processStripeEvent(createStoreFromEnv(process.env), event, async (session) => {
+      await postToDiscord(formatSaleMessage(session as Stripe.Checkout.Session));
+    });
+  } catch (err) {
+    // 500 so Stripe retries rather than dropping a stock release.
+    const message = err instanceof Error ? err.message : 'Unknown error.';
+    res.status(500).json({ error: `Webhook handling failed: ${message}` });
+    return;
   }
 
   res.status(200).json({ received: true });

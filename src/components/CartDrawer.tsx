@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useCart } from '../lib/cart';
 import { getProduct, primaryImage } from '../lib/products';
+import { useRemainingLookup } from '../lib/inventory';
 import { startCheckout } from '../lib/stripe';
 
 export default function CartDrawer() {
   const { items, isOpen, close, remove, setQuantity } = useCart();
+  const remainingOf = useRemainingLookup();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -83,7 +85,8 @@ export default function CartDrawer() {
                       <span className="tabular-nums w-6 text-center">{quantity}</span>
                       <button
                         onClick={() => setQuantity(product.slug, quantity + 1)}
-                        className="w-7 h-7 border border-borderDefault hover:border-borderStrong"
+                        disabled={quantity >= remainingOf(product)}
+                        className="w-7 h-7 border border-borderDefault hover:border-borderStrong disabled:opacity-40 disabled:hover:border-borderDefault"
                         aria-label={`Increase ${product.title}`}
                       >
                         +

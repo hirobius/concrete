@@ -52,8 +52,12 @@ export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
-export function isAvailable(p: Product): boolean {
-  return p.status === 'available' && p.edition.remaining > 0;
+/**
+ * `remaining` is the live count from `useRemaining` (src/lib/inventory.tsx);
+ * omit it to use the build-time `edition.remaining`.
+ */
+export function isAvailable(p: Product, remaining: number = p.edition.remaining): boolean {
+  return p.status === 'available' && remaining > 0;
 }
 
 /**
@@ -64,8 +68,8 @@ export function primaryImage(p: Product): ProductImage | undefined {
   return p.images[0];
 }
 
-export function editionLabel(p: Product): string {
-  const { total, remaining } = p.edition;
+export function editionLabel(p: Product, remaining: number = p.edition.remaining): string {
+  const { total } = p.edition;
   if (remaining === 0) return 'Edition complete';
   if (total <= 30) return `${remaining} of ${total} remaining`;
   return `Edition of ${total}`;

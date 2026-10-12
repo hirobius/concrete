@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import type { Product } from '../lib/products';
 import { isAvailable, primaryImage } from '../lib/products';
+import { useRemaining } from '../lib/inventory';
 import EditionBadge from './EditionBadge';
 
 export default function ProductCard({ product }: { product: Product }) {
-  const available = isAvailable(product);
+  const available = isAvailable(product, useRemaining(product));
   return (
     <Link
       to={`/products/${product.slug}`}

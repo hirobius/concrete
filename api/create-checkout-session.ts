@@ -1,6 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import productData from '../data/products.json' with { type: 'json' };
+import {
+  RESERVED_FLAG,
+  SESSION_TTL_SECONDS,
+  createStoreFromEnv,
+  releaseCart,
+  reserveCart,
+} from './_lib/inventory.mjs';
 
 type Product = {
   slug: string;
@@ -54,14 +61,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
+  // Validate everything before reserving anything, so a bad cart never touches stock.
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+  const reservations: { slug: string; quantity: number; seed: number; title: string }[] = [];
   for (const it of items) {
     const product = products.find((p) => p.slug === it.slug);
     if (!product) {
       res.status(400).json({ error: `Unknown product: ${it.slug}` });
       return;
     }
-    if (product.status !== 'available' || product.edition.remaining < it.quantity) {
+    // A negative or fractional quantity would turn a reservation into a refill.
+    if (!Number.isInteger(it.quantity) || it.quantity < 1) {
+      res.status(400).json({ error: `Invalid quantity for ${product.title}.` });
+      return;
+    }
+    if (product.status !== 'available') {
       res.status(409).json({ error: `${product.title} is no longer available in that quantity.` });
       return;
     }
@@ -69,12 +83,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(500).json({ error: `${product.title} is missing a Stripe price ID. Set it in data/products.json.` });
       return;
     }
+    // No adjustable_quantity: the buyer must not be able to raise the quantity
+    // past what we reserve below.
     lineItems.push({
       price: product.stripePriceId,
       quantity: it.quantity,
-      adjustable_quantity: { enabled: true, minimum: 1, maximum: product.edition.remaining },
       tax_rates: [taxRateId],
     });
+    reservations.push({ slug: product.slug, quantity: it.quantity, seed: product.edition.remaining, title: product.title });
+  }
+
+  // Live stock (Upstash) when configured; otherwise the static products.json
+  // counts with no reservations — the pre-#22 behavior.
+  const store = createStoreFromEnv(process.env);
+  let reserved = false;
+  try {
+    const result = await reserveCart(store, reservations);
+    if (!result.ok) {
+      const title = reservations.find((r) => r.slug === result.slug)?.title ?? result.slug;
+      res.status(409).json({ error: `${title} is no longer available in that quantity.` });
+      return;
+    }
+    reserved = result.reserved;
+  } catch {
+    res.status(503).json({ error: 'Inventory is temporarily unavailable. Please try again in a moment.' });
+    return;
   }
 
   const stripe = new Stripe(secret, { apiVersion: '2025-02-24.acacia' });
@@ -110,18 +143,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ],
       success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/checkout/cancel`,
+      // Stripe's minimum lifetime; the webhook releases the stock on expiry.
+      expires_at: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS,
       metadata: {
         cart_slugs: items.map((i) => `${i.slug}:${i.quantity}`).join(','),
+        // Only sessions that took stock may give it back when they expire.
+        ...(reserved ? { [RESERVED_FLAG]: '1' } : {}),
       },
     });
 
     if (!session.url) {
+      await releaseCart(store, reservations);
       res.status(500).json({ error: 'Stripe did not return a checkout URL.' });
       return;
     }
 
     res.status(200).json({ url: session.url });
   } catch (err) {
+    await releaseCart(store, reservations);
     const message = err instanceof Error ? err.message : 'Unknown error.';
     res.status(500).json({ error: message });
   }

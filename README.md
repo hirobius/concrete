@@ -46,11 +46,15 @@ existing entry and the validation rules: `docs/CATALOG-AUTHORING.md`.
 ## Sale flow
 
 1. Visitor adds Forms to cart drawer (state in localStorage).
-2. Checkout button POSTs cart to `/api/create-checkout-session`.
-3. Stripe Checkout (hosted) handles payment + shipping address.
-4. Stripe webhook → `/api/stripe-webhook` decrements `edition.remaining` in
-   `products.json` (committed via the build, so it's eventually consistent).
-5. Discord webhook posts to `#sales`.
+2. Checkout button POSTs cart to `/api/create-checkout-session`, which
+   reserves each line's stock atomically in Upstash Redis (SETUP.md §4a; no
+   store configured = static counts, no reservations) and 409s if any line ran out.
+3. Stripe Checkout (hosted) handles payment + shipping address. The session
+   expires after 30 minutes.
+4. Stripe webhook → `/api/stripe-webhook`: `checkout.session.completed` posts
+   to Discord (stock was already taken at step 2); `checkout.session.expired`
+   releases the reservation. Both are idempotent by event id.
+5. Storefront reads live counts from `GET /api/inventory`.
 6. Stripe sends payment receipt email to buyer + Adrian.
 
 ## Hand-off / first-launch
