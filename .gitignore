@@ -12,3 +12,6 @@ tsconfig.tsbuildinfo
 # Raw product photography (source for scripts/process-product-photos.mjs).
 # See docs/PRODUCT-IMAGES.md — outputs go to public/products/, which IS committed.
 photos-src/
+test-results/
+playwright-report/
+/playwright/.cache/

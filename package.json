@@ -15,7 +15,8 @@
     "test": "node --test scripts/lib/*.test.mjs scripts/*.test.mjs",
     "tokens:check": "node scripts/generate-tenant-overlay.mjs --check",
     "tokens:overlay": "node scripts/generate-tenant-overlay.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hirobius/design-system": "^0.15.0",
@@ -25,6 +26,7 @@
     "stripe": "^17.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@types/node": "^22.7.4",
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
