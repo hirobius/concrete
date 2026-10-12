@@ -12,6 +12,7 @@
     "dev": "vite",
     "photos": "node scripts/process-product-photos.mjs",
     "preview": "vite preview",
+    "stripe:sync": "node scripts/stripe-sync.mjs",
     "test": "node --test scripts/lib/*.test.mjs scripts/*.test.mjs api/_lib/*.test.mjs",
     "tokens:check": "node scripts/generate-tenant-overlay.mjs --check",
     "tokens:overlay": "node scripts/generate-tenant-overlay.mjs",

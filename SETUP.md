@@ -31,18 +31,38 @@ The site should render with placeholder products and broken images
    the LLC (EIN, WA address).
 2. Toggle **Test mode** for the entire setup below. Switch to live only
    after you've placed a test order successfully.
-3. Create one Stripe Product per Form:
-   - Name: `Form 01` / `Form 02` / `Form 03`
-   - Price: matches `priceUsd` in `data/products.json`
-   - One-time payment, USD
-4. Copy the resulting `price_xxx` ID into the matching entry's
-   `stripePriceId` field in `data/products.json`. Replace the
-   `price_TODO_form_NN` placeholders — `pnpm catalog:add -- --edit <slug>`
-   walks you through this field-by-field, or edit the JSON directly and
-   check it with `pnpm catalog:validate`. Full authoring flow (adding a
+3. **Create the Products + Prices: `pnpm stripe:sync`** (default path).
+   It reads `data/products.json`, creates one Stripe Product per entry
+   (found again later by `metadata.slug`) with a one-time USD Price equal to
+   `priceUsd`, and writes each `price_…` id back over the
+   `price_TODO_…`/`price_sample_…` placeholders. Idempotent — re-run it after
+   any title or price change. It needs a Stripe key in your shell:
+
+   - In <https://dashboard.stripe.com/apikeys> (Test mode) → **Create
+     restricted key**, with **Products: Write** and **Prices: Write** and
+     nothing else. Export it for the run only:
+     `STRIPE_SECRET_KEY=rk_test_… pnpm stripe:sync -- --dry-run` first, then
+     without `--dry-run`. (The script reads the process environment only and
+     never opens a `.env*` file.)
+   - With no key set it prints `stripe-sync: skipped — STRIPE_SECRET_KEY not
+     set` and exits 0, so it is safe to leave wired in.
+   - A live key (`sk_live_`/`rk_live_`) is refused without `--confirm-live`;
+     see §8.
+
+   Details and flags: `docs/CATALOG-AUTHORING.md` ("Sync to Stripe").
+
+   **Fallback — by hand in the Dashboard:** create one Product per Form
+   (`Form 01` / `02` / `03`, one-time payment, USD, price matching
+   `priceUsd`), then copy each `price_xxx` into the matching entry's
+   `stripePriceId` in `data/products.json`. `pnpm catalog:add -- --edit <slug>`
+   walks you through that field, or edit the JSON directly and check it with
+   `pnpm catalog:validate`.
+4. Check the result with `pnpm check:launch` — its `stripe-price-ids` check
+   fails while any placeholder id remains. Full authoring flow (adding a
    product from scratch, the validation rules): `docs/CATALOG-AUTHORING.md`.
 5. Get keys from <https://dashboard.stripe.com/apikeys>:
-   - `STRIPE_SECRET_KEY` → `.env.local`
+   - `STRIPE_SECRET_KEY` → `.env.local` (the app's key, used by checkout; the
+     restricted sync key above is separate and only for `pnpm stripe:sync`)
 
    Checkout is Stripe-hosted and the session is created server-side, so
    **no publishable key is needed**. Earlier revisions of this file asked
@@ -157,7 +177,12 @@ Before flipping to live mode:
 ## 8. Going live
 
 1. In Stripe, switch from Test mode to Live mode. Repeat product/price
-   creation in live mode (Stripe doesn't auto-migrate test products).
+   creation in live mode (Stripe doesn't auto-migrate test products):
+   with a live restricted key (Products + Prices write), run
+   `pnpm stripe:sync -- --dry-run`, then `pnpm stripe:sync -- --confirm-live`.
+   The test-mode `price_…` ids in the catalog aren't found in live mode, so
+   the script creates fresh live prices and overwrites them (step 3 below is
+   then already done).
 2. Update `STRIPE_SECRET_KEY`, `VITE_STRIPE_PUBLISHABLE_KEY`,
    `STRIPE_WEBHOOK_SECRET` in Vercel to live values.
 3. Update `stripePriceId` values in `data/products.json` to the live
