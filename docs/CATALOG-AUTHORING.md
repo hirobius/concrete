@@ -64,6 +64,17 @@ key is refused unless you pass `--confirm-live`; run `--dry-run` first. Set
 `SITE_URL` to also send the absolute hero image URL with newly created
 Products. Re-price after editing `priceUsd` the same way: run the sync again.
 
+## Add a product from a file (the agent path)
+
+```bash
+pnpm catalog:add -- --from draft.json            # add one product object
+pnpm catalog:add -- --from draft.json --replace  # overwrite that slug
+```
+
+Non-interactive, same validation as the prompts. It refuses to overwrite an
+existing slug unless `--replace` is given. This is what the publish flow uses
+(`docs/PUBLISHING.md`, `.claude/skills/publish-product/`).
+
 ## Edit an existing product
 
 ```bash

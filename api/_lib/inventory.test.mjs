@@ -217,3 +217,42 @@ test('Upstash store: an API error surfaces as a throw (checkout fails closed)', 
   );
   await assert.rejects(store.reserve('a', 1, 1), /WRONGPASS/);
 });
+
+// A store whose release() fails for `failSlug` the first `failTimes` times.
+function flakyReleaseStore(initial, failSlug, failTimes = 1) {
+  const store = createMemoryStore(initial);
+  let failures = 0;
+  const realRelease = store.release;
+  store.release = async (slug, qty) => {
+    if (slug === failSlug && failures < failTimes) {
+      failures++;
+      throw new Error('simulated INCRBY failure');
+    }
+    return realRelease(slug, qty);
+  };
+  return store;
+}
+
+const expired = (cart) => ({
+  id: 'evt_expired_partial',
+  type: 'checkout.session.expired',
+  data: { object: { metadata: { cart_slugs: cart, [RESERVED_FLAG]: '1' } } },
+});
+
+test('expired session: a partial release failure + Stripe retry gives each line back exactly once', async () => {
+  // Cart reserved a:2 and b:1 (counts are post-reservation: a 3→1, b 5→4).
+  const store = flakyReleaseStore({ a: 1, b: 4 }, 'b');
+  const event = expired('a:2,b:1');
+
+  await assert.rejects(processStripeEvent(store, event, async () => {})); // b fails, Stripe will retry
+  await processStripeEvent(store, event, async () => {}); // the retry
+
+  const counts = await store.getAll({ a: 0, b: 0 });
+  assert.deepEqual(counts, { a: 3, b: 5 }, 'a must not be released twice');
+});
+
+test('expired session: the same piece on two cart lines releases both lines', async () => {
+  const store = createMemoryStore({ a: 0 }); // reserved a:1 twice from 2
+  await processStripeEvent(store, expired('a:1,a:1'), async () => {});
+  assert.deepEqual(await store.getAll({ a: 0 }), { a: 2 });
+});

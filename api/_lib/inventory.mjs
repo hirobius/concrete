@@ -245,10 +245,17 @@ export async function processStripeEvent(store, event, notify) {
   if (event.type === 'checkout.session.expired') {
     if (!store || session.metadata?.[RESERVED_FLAG] !== '1') return 'ignored';
     const lines = parseCartSlugs(session.metadata?.cart_slugs);
-    return once(store, event.id, async () => {
-      // Not releaseCart: a failed INCRBY must fail the event so Stripe retries.
-      await Promise.all(lines.map((l) => store.release(l.slug, l.quantity)));
-    });
+    // Claim per line, not per event: if one INCRBY fails, Stripe's retry must
+    // redo only that line — redoing the lines that already succeeded would
+    // hand their stock back twice (and inflated stock is an oversell later).
+    // Keyed by position so the same piece on two cart lines releases both.
+    const outcomes = await Promise.allSettled(
+      lines.map((l, i) => once(store, `${event.id}:${i}`, () => store.release(l.slug, l.quantity))),
+    );
+    const failed = outcomes.find((o) => o.status === 'rejected');
+    // Rethrow so the webhook returns 500 and Stripe retries the failed line(s).
+    if (failed) throw failed.reason;
+    return outcomes.every((o) => o.value === 'duplicate') ? 'duplicate' : 'handled';
   }
   return 'ignored';
 }
