@@ -27,12 +27,42 @@ Then, same as before:
 
 1. Drop photos in `public/products/<slug>/` and point `images[].src` at them
    (the tool lets you enter these interactively).
-2. Create the Stripe product + price in the Dashboard (SETUP.md §3), paste
-   the `price_…` id in when prompted, or `pnpm catalog:add -- --edit <slug>`
-   afterward to fill it in.
+2. Create the Stripe product + price with `pnpm stripe:sync` (see
+   [Sync to Stripe](#sync-to-stripe)) — leave `stripePriceId` as the
+   `price_TODO_…` placeholder and the script writes the real id back.
+   Fallback if you'd rather click: create them in the Dashboard (SETUP.md §3),
+   paste the `price_…` id in when prompted, or
+   `pnpm catalog:add -- --edit <slug>` afterward to fill it in.
 3. Run `pnpm check:launch` — it will flag a placeholder `price_TODO_…` or
    `price_sample_…` id, a placeholder image, or a schema violation.
 4. Commit.
+
+## Sync to Stripe
+
+```bash
+pnpm stripe:sync -- --dry-run     # print the plan; writes nothing anywhere
+pnpm stripe:sync                  # create/update Products + Prices, write ids back
+pnpm stripe:sync -- --slug form-01   # just one product
+```
+
+`scripts/stripe-sync.mjs` makes Stripe match `data/products.json`:
+
+- Finds each Stripe Product by `metadata.slug` (created if missing; name and
+  description updated if they drifted).
+- Makes sure a USD Price of `round(priceUsd × 100)` is the product's default
+  price. Stripe prices are immutable, so a changed `priceUsd` creates a new
+  Price, makes it the default, and archives the old one.
+- Writes the `price_…` id into `data/products.json` — only that value changes;
+  key order, escapes and the trailing newline are left alone, so the diff is
+  one line per product.
+- Is idempotent: a second run with nothing changed does nothing.
+
+It reads `STRIPE_SECRET_KEY` from the environment only (never from a `.env*`
+file) and does nothing — exit 0, one line — while that is unset. A
+**restricted key with Products: Write and Prices: Write** is enough. A `sk_live_`/`rk_live_`
+key is refused unless you pass `--confirm-live`; run `--dry-run` first. Set
+`SITE_URL` to also send the absolute hero image URL with newly created
+Products. Re-price after editing `priceUsd` the same way: run the sync again.
 
 ## Edit an existing product
 
