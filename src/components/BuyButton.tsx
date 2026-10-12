@@ -1,10 +1,11 @@
 import type { Product } from '../lib/products';
 import { isAvailable } from '../lib/products';
 import { useCart } from '../lib/cart';
+import { useRemaining } from '../lib/inventory';
 
 export default function BuyButton({ product }: { product: Product }) {
   const { add } = useCart();
-  const available = isAvailable(product);
+  const available = isAvailable(product, useRemaining(product));
 
   if (!available) {
     return (

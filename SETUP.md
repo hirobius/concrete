@@ -49,7 +49,9 @@ The site should render with placeholder products and broken images
    for `VITE_STRIPE_PUBLISHABLE_KEY`; nothing in `api/` or `src/` reads it.
 6. **Webhook**: at <https://dashboard.stripe.com/webhooks>, add an
    endpoint pointing at `https://hirobius.studio/api/stripe-webhook`
-   listening for `checkout.session.completed`. Copy the signing
+   listening for `checkout.session.completed` **and
+   `checkout.session.expired`** (the second one gives reserved stock back
+   when a buyer abandons checkout — see §4a). Copy the signing
    secret into `STRIPE_WEBHOOK_SECRET`.
 
 ## 4. Vercel project + DNS (15 min)
@@ -72,11 +74,41 @@ The site should render with placeholder products and broken images
    | `STRIPE_WEBHOOK_SECRET` | yes | Production-only scope initially |
    | `STRIPE_TAX_RATE_ID` | yes | WA sales tax, fixed Spokane rate (Adrian, 2026-09-26 — not Stripe Tax). Create it at <https://dashboard.stripe.com/tax-rates> ("New tax rate" → Washington/Spokane combined rate, inclusive: No), then copy its `txr_…` id here. Checkout fails loud with this exact message if unset. |
    | `DISCORD_SALES_WEBHOOK_URL` | yes | sale notifications |
+   | `UPSTASH_REDIS_REST_URL` | optional | Live edition stock (§4a). Without a store, checkout falls back to the static `edition.remaining` in `data/products.json` and reserves nothing |
+   | `UPSTASH_REDIS_REST_TOKEN` | optional | Pair of the URL above |
+   | `KV_REST_API_URL` | optional | Same as `UPSTASH_REDIS_REST_URL`; the name Vercel's Upstash integration injects. Either pair works |
+   | `KV_REST_API_TOKEN` | optional | Same as `UPSTASH_REDIS_REST_TOKEN`; injected by the integration |
    | `VITE_SITE_URL` | optional | Stripe success/cancel URLs. Falls back to the request host, so it works unset — set it explicitly if the site is ever reached on more than one hostname |
 4. Add `hirobius.studio` and `www.hirobius.studio` as custom domains.
    Vercel prints the exact A / CNAME records — paste those into your
    registrar's DNS panel.
 5. Wait for cert provisioning (~5 min). Visit `https://hirobius.studio`.
+
+## 4a. Live edition stock — Upstash Redis (5 min)
+
+Without this, two buyers can both pay for the last unit of a small edition.
+Checkout reserves stock atomically; a sale keeps it, an abandoned/expired
+session gives it back.
+
+1. In the Vercel project: **Storage** → **Create / Connect** → **Upstash for
+   Redis** (Marketplace) → connect it to this project for Production + Preview.
+   Vercel injects `KV_REST_API_URL` / `KV_REST_API_TOKEN`; no manual env needed
+   (setting `UPSTASH_REDIS_REST_URL` / `_TOKEN` yourself works too).
+2. Redeploy. `GET /api/inventory` now returns live counts.
+3. In the Stripe webhook (§3.6), make sure `checkout.session.expired` is
+   subscribed alongside `checkout.session.completed`.
+
+How it behaves:
+
+- Each slug's counter (`inv:<slug>`) is **seeded from `edition.remaining` in
+  `data/products.json` the first time it is reserved or read after that**; from then on
+  Redis owns the number and the JSON is only the starting value. So before
+  switching this on, set `edition.remaining` to what is truly left. To correct a
+  count later, edit the key in the Upstash console (`SET inv:<slug> <n>`).
+- A Checkout Session holds its stock for 30 minutes (Stripe's minimum), then
+  expires and releases it. Buyers cannot change quantity on the Stripe page.
+- Redis down at checkout → buyers get a 503 "try again" rather than risking an oversell.
+  Env unset → today's behavior (static counts, no reservations).
 
 ## 5. Discord webhook (5 min)
 
@@ -118,7 +150,9 @@ Before flipping to live mode:
 - [ ] Complete checkout → land on `/checkout/success`.
 - [ ] Stripe dashboard shows the test payment.
 - [ ] Discord `#sales` channel receives a 🪨 New sale message.
-- [ ] (Manually) Decrement `edition.remaining` for that Form in `products.json` and commit.
+- [ ] With Upstash connected (§4a): `GET /api/inventory` shows that Form's count dropped by one.
+- [ ] Start a checkout and abandon it: the count drops, then returns after the session expires (or expire it from the Stripe dashboard).
+- [ ] Without Upstash: manually decrement `edition.remaining` for that Form in `products.json` and commit.
 
 ## 8. Going live
 
