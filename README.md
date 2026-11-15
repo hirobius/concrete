@@ -1,59 +1,52 @@
 # Hirobius Studio
 
-Storefront for Hirobius LLC's concrete figurine product line. Handmade,
-cast in small editions, made in Spokane, Washington.
+A storefront for handmade concrete figurines, cast in small editions in Spokane, Washington.
 
-- **Domain (planned):** `hirobius.studio`
-- **Stack:** Vite + React Router + Tailwind + Stripe Checkout
-- **Hosting:** Vercel (static + serverless functions)
-- **Catalog:** `data/products.json` (content) + Stripe Products (price + payment)
+![Screenshot of the home page](docs/images/screenshot.png)
 
-## Local dev
+**Live:** https://concrete-rho-six.vercel.app
+
+## Stack
+
+- Vite, React, React Router and Tailwind CSS.
+- Design tokens from `@hirobius/design-system`, with a brand overlay in `tenant/`.
+- Stripe Checkout for payment. Two Vercel serverless functions in `api/`.
+- The catalog is `data/products.json`. Stripe holds the price of each product.
+- Hosted on Vercel.
+
+## Run it
 
 ```bash
 pnpm install
-cp .env.example .env.local
-# fill in STRIPE_*, DISCORD_SALES_WEBHOOK_URL
-pnpm dev
+pnpm dev      # http://localhost:5180
+pnpm check    # typecheck, tests and the docs check
+pnpm build
 ```
 
-For Stripe webhook testing locally:
+Checkout needs Stripe keys in `.env.local`. See [docs/sale-flow.md](docs/sale-flow.md).
 
-```bash
-stripe listen --forward-to localhost:5180/api/stripe-webhook
-# copy the signing secret it prints into STRIPE_WEBHOOK_SECRET
-```
+## Structure
 
-## Adding a Form
+- `src/` - the React app: pages, components, cart and catalog helpers.
+- `api/` - serverless functions: create a Checkout session, receive the Stripe webhook.
+- `data/products.json` - the catalog.
+- `tenant/` - the brand token overlay for the design system.
+- `scripts/` - catalog, photo, token and launch tools.
+- `docs/` - guides, one subject per file.
 
-```bash
-pnpm catalog:add
-```
+## Docs
 
-Guided flow — prompts for each field and validates before writing (schema:
-`scripts/lib/product-schema.mjs`). Full walkthrough, including editing an
-existing entry and the validation rules: `docs/CATALOG-AUTHORING.md`.
+- [Add a product](docs/add-a-product.md)
+- [Catalog rules](docs/CATALOG-AUTHORING.md)
+- [Product images](docs/PRODUCT-IMAGES.md)
+- [Sale flow and local Stripe tests](docs/sale-flow.md)
+- [First launch setup](SETUP.md)
+- [Go-live runbook](docs/GO-LIVE-RUNBOOK.md)
 
-1. `pnpm catalog:add` — title, subtitle, story, dimensions, materials, price,
-   edition counts, images.
-2. Drop product photos in `public/products/<slug>/`.
-3. Create the Stripe product + price in the Stripe Dashboard.
-4. Paste the resulting `price_xxx` in when prompted (or `pnpm catalog:add --
-   --edit <slug>` after).
-5. `pnpm check:launch` to catch placeholders before they ship.
-6. Commit. Vercel rebuilds. Live.
+## Contributing
 
-## Sale flow
+See [CONTRIBUTING.md](CONTRIBUTING.md). Report a security problem as [SECURITY.md](SECURITY.md) says.
 
-1. Visitor adds Forms to cart drawer (state in localStorage).
-2. Checkout button POSTs cart to `/api/create-checkout-session`.
-3. Stripe Checkout (hosted) handles payment + shipping address.
-4. Stripe webhook → `/api/stripe-webhook` decrements `edition.remaining` in
-   `products.json` (committed via the build, so it's eventually consistent).
-5. Discord webhook posts to `#sales`.
-6. Stripe sends payment receipt email to buyer + Adrian.
+## License
 
-## Hand-off / first-launch
-
-See `SETUP.md` for the at-the-computer checklist (domain registration,
-Stripe account, Discord webhook, Vercel project + DNS, photography).
+All rights reserved. No license is granted.
